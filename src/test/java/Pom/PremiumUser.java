@@ -1,5 +1,8 @@
 package Pom;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -27,9 +30,7 @@ public class PremiumUser {
         this.driver = driver;
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         PageFactory.initElements(driver, this);
-//        String filepath="/Users/dineshdeshmukh/eclipse-workspace/SweetBalance/src/test/resources/testdata/SweetBalanceApplication.xlsx";
-//		ExcelReader excelReader = new ExcelReader(filepath);
-//		  credentialsData = excelReader.getDataAll("credentialsData");
+
     }
 
     // Buttons and inputs
@@ -49,6 +50,10 @@ public class PremiumUser {
     @FindBy(xpath = "//button[@type='submit' and normalize-space()='Sign in']")
     private WebElement signInButton;
 
+    @FindBy(xpath = "//img[@alt='Female character illustration']")
+    private WebElement femaleCharacterImage;
+
+    
     // Navigation buttons
     @FindBy(xpath = "//button[text()='Home']")
     private WebElement homeBtn;
@@ -63,17 +68,34 @@ public class PremiumUser {
     private WebElement educationBtn;
 
     // Other UI elements
-    @FindBy(xpath = "//button[text()='🎯 Challenge Yourself Today!']")
+    @FindBy(xpath = "//button[contains(@class, 'animate-pulse')]")
     private WebElement flashtab;
 
+    public WebElement getFlashtab() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(
+            By.xpath("//button[contains(@class, 'animate-pulse')]")));
+    }
     @FindBy(xpath = "//span[contains(@class,'text-5xl')]")
     private WebElement emojiIcon;
 
     @FindBy(xpath = "//img[contains(@class,'object-contain')]")
     private WebElement genderImage;
+    
+    @FindBy(xpath = "//div[contains(@class, 'text-sm') and contains(text(), 'Mood: Good')]")
+    private WebElement moodStatus;
+    
+    @FindBy(xpath = "//div[contains(@class, 'text-gray-500') and contains(text(), 'Mood')]")
+    private WebElement moodText;
+    
+    @FindBy(xpath = "//button[normalize-space(text())='Log']")
+    private WebElement logButton;
 
     @FindBy(xpath = "//span[text()='Meal Plan']")
     private WebElement mealPlanBtn;
+    
+    @FindBy(xpath = "//h2[text()='Record New Data']")
+    private WebElement recordNewDataText;
 
     @FindBy(xpath = "//span[text()='Exercise']")
     private WebElement exerciseBtn;
@@ -90,14 +112,18 @@ public class PremiumUser {
     @FindBy(xpath = "//button[.//span[text()='Blood Glucose']]")
     private WebElement bloodGlucoseBtn;
 
-    @FindBy(xpath = "//button[svg and span[text()='Physical Activity']]")
+    @FindBy(xpath = "//button[span[text()='Physical Activity']]")
     private WebElement physicalActivityBtn;
 
-    @FindBy(xpath = "//button[svg and span[text()='Food Intake']]")
+    @FindBy(xpath = "//button[span[text()='Food Intake']]")
     private WebElement foodIntakeBtn;
 
-    @FindBy(xpath = "//button[svg and span[text()='Medication']]")
+    @FindBy(xpath = "//button[span[text()='Medication']]")
     private WebElement medicationBtn;
+    
+    @FindBy(css = "svg[class*='lucide-activity']")
+    private WebElement activitySvgIcon;
+
 
     @FindBy(xpath = "//h2[text()='Choose Your Challenge']")
     private WebElement challengeHeader;
@@ -117,16 +143,139 @@ public class PremiumUser {
             LoggerLoad.warn("Login button not found or already clicked, skipping...");
         }
     }
+   
+    public boolean isChallengeButtonFlashingWithDuration(double expectedSeconds) {
+        WebElement challengeBtn = new WebDriverWait(driver, Duration.ofSeconds(10))
+            .until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//button[contains(text(),'Challenge Yourself Today')]")));
 
-  
+        String animationDuration = (String) ((JavascriptExecutor) driver)
+            .executeScript("return window.getComputedStyle(arguments[0]).getPropertyValue('animation-duration');", challengeBtn);
 
+        System.out.println("Animation duration: " + animationDuration);
+
+        // Clean the string and compare (e.g., 0.2s)
+        return animationDuration.trim().equals(expectedSeconds + "s");
+    }
+    public boolean isFemaleImageDisplayed() {
+        LoggerLoad.info("Waiting for Female character image to appear...");
+        
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        try {
+            wait.until(ExpectedConditions.visibilityOf(femaleCharacterImage));
+            boolean visible = femaleCharacterImage.isDisplayed();
+            LoggerLoad.info("Female image displayed: " + visible);
+            return visible;
+        } catch (TimeoutException e) {
+            LoggerLoad.error("Female character image did not appear in time.");
+            return false;
+        }
+    }
+
+
+    public boolean isEmojiDisplayed() {
+        LoggerLoad.info("Checking if emoji icon 😊 is displayed...");
+        boolean visible = emojiIcon.isDisplayed();
+        LoggerLoad.info("Emoji icon displayed: " + visible);
+        return visible;
+    }
+    public void waitForFemaleImageToAppear() {
+        By femaleImageLocator = By.xpath("//img[contains(@alt, 'Female')]");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(femaleImageLocator));
+        LoggerLoad.info("Female character image is visible after login.");
+    }
+    public boolean isMoodStatusDisplayed() {
+        LoggerLoad.info("Checking if Mood status is displayed...");
+        boolean visible = moodStatus.isDisplayed();
+        LoggerLoad.info("Mood status displayed: " + visible + " | Text: " + moodStatus.getText());
+        return visible;
+    }
+    public boolean isLogButtonVisible() {
+        LoggerLoad.info("Waiting for 'Log' button to appear...");
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(logButton));
+            boolean visible = logButton.isDisplayed();
+            LoggerLoad.info("'Log' button displayed: " + visible);
+            return visible;
+        } catch (TimeoutException e) {
+            LoggerLoad.error("'Log' button did not appear within timeout.");
+            return false;
+        }
+    }
+    public String getMoodText() {
+        LoggerLoad.info("Fetching mood text...");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOf(moodText));
+        String mood = moodText.getText().trim();
+        LoggerLoad.info("Mood text displayed: " + mood);
+        return mood;
+    }
+    public boolean isWeeklyPlanButtonVisible() {
+        LoggerLoad.info("Checking visibility of Weekly Plan button...");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOf(weeklyPlanBtn));
+        boolean visible = weeklyPlanBtn.isDisplayed();
+        LoggerLoad.info("Weekly Plan button displayed: " + visible);
+        return visible;
+    }
+    public boolean isRecordNewDataTextVisible() {
+        LoggerLoad.info("Checking if 'Record New Data' text is displayed...");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOf(recordNewDataText));
+        boolean visible = recordNewDataText.isDisplayed();
+        LoggerLoad.info("'Record New Data' text displayed: " + visible);
+        return visible;
+    }
+    public void PageScrollDown() {
+		PageFactory.initElements(driver, this);
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("window.scrollBy(0, 10000);");
+	}
+    public boolean areRecordNewDataButtonsVisible() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        try {
+            wait.until(ExpectedConditions.visibilityOf(bloodGlucoseBtn));
+            wait.until(ExpectedConditions.visibilityOf(physicalActivityBtn));
+            wait.until(ExpectedConditions.visibilityOf(foodIntakeBtn));
+            wait.until(ExpectedConditions.visibilityOf(medicationBtn));
+            return true;
+        } catch (TimeoutException e) {
+            LoggerLoad.error("One or more Record New Data buttons are not visible.");
+            return false;
+        }
+    }
     public void enterEmail(String email) {
         wait.until(ExpectedConditions.visibilityOf(enterEmailInput));
         enterEmailInput.clear();
         enterEmailInput.sendKeys(email);
         LoggerLoad.info("Entered email: " + email);
     }
+    public String getBloodGlucoseText() {
+        return bloodGlucoseBtn.getText().trim();
+    }
+    public boolean isActivitySvgVisible() {
+        LoggerLoad.info("Checking if activity SVG icon is visible near blood glucose text...");
+        return activitySvgIcon.isDisplayed();
+    }
+    WebElement svgIcon = new WebDriverWait(driver, Duration.ofSeconds(10))
+    	    .until(ExpectedConditions.visibilityOfElementLocated(
+    	        By.cssSelector("main div:nth-child(3) div button.flex.flex-col.items-center svg")));
 
+
+    public String getPhysicalActivityText() {
+        return physicalActivityBtn.getText().trim();
+    }
+
+    public String getFoodIntakeText() {
+        return foodIntakeBtn.getText().trim();
+    }
+
+    public String getMedicationText() {
+        return medicationBtn.getText().trim();
+    }
+    
     public void clickContinueWithEmailBtn() {
         waitAndClick(continueWithEmailBtn, "Continue with email");
     }
@@ -192,44 +341,6 @@ public class PremiumUser {
 
 
 
-    // Visibility checks for navigation bar buttons and others
-    public boolean isAllNavButtonsDisplayed() {
-        wait.until(ExpectedConditions.visibilityOf(homeBtn));
-        wait.until(ExpectedConditions.visibilityOf(logbookBtn));
-        wait.until(ExpectedConditions.visibilityOf(dashboardBtn));
-        wait.until(ExpectedConditions.visibilityOf(educationBtn));
-        wait.until(ExpectedConditions.visibilityOf(emojiIcon));
-        wait.until(ExpectedConditions.visibilityOf(genderImage));
-        wait.until(ExpectedConditions.visibilityOf(mealPlanBtn));
-        wait.until(ExpectedConditions.visibilityOf(exerciseBtn));
-        wait.until(ExpectedConditions.visibilityOf(fullMealPlanBtn));
-        wait.until(ExpectedConditions.visibilityOf(weeklyPlanBtn));
-        wait.until(ExpectedConditions.visibilityOf(recordNewDataTxt));
-        wait.until(ExpectedConditions.visibilityOf(bloodGlucoseBtn));
-        wait.until(ExpectedConditions.visibilityOf(physicalActivityBtn));
-        wait.until(ExpectedConditions.visibilityOf(foodIntakeBtn));
-        wait.until(ExpectedConditions.visibilityOf(medicationBtn));
-        wait.until(ExpectedConditions.visibilityOf(flashtab));
-        wait.until(ExpectedConditions.visibilityOf(challengeHeader));
-
-        return homeBtn.isDisplayed()
-                && logbookBtn.isDisplayed()
-                && dashboardBtn.isDisplayed()
-                && educationBtn.isDisplayed()
-                && emojiIcon.isDisplayed()
-                && genderImage.isDisplayed()
-                && mealPlanBtn.isDisplayed()
-                && exerciseBtn.isDisplayed()
-                && fullMealPlanBtn.isDisplayed()
-                && weeklyPlanBtn.isDisplayed()
-                && recordNewDataTxt.isDisplayed()
-                && bloodGlucoseBtn.isDisplayed()
-                && physicalActivityBtn.isDisplayed()
-                && foodIntakeBtn.isDisplayed()
-                && medicationBtn.isDisplayed()
-                && flashtab.isDisplayed()
-                && challengeHeader.isDisplayed();
-    }
 
     // Verify the navigation buttons are in expected order
     public boolean isNavButtonsInOrder() {
@@ -249,4 +360,26 @@ public class PremiumUser {
         return actualOrder.equals(expectedOrder);
   
     }
+    public void waitForChallengeButton() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(40));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+            By.xpath("//button[contains(text(),'Challenge Yourself Today')]")));
+        LoggerLoad.info("Challenge Yourself Today button is now visible.");
+    }
+
+    public boolean isChallengeButtonAnimated() {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        String animationName = (String) js.executeScript(
+            "return window.getComputedStyle(arguments[0]).animationName;", getFlashtab());
+
+        LoggerLoad.info("Animation name on Challenge Button: " + animationName);
+        return animationName != null && !animationName.isEmpty() && !animationName.equals("none");
+    }
+    public String getChallengeButtonText() {
+        return flashtab.getText();
+       
+    }
+
+
+	
 }
