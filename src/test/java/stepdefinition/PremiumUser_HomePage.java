@@ -2,8 +2,10 @@ package stepdefinition;
 
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import Pom.PremiumUser;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -11,10 +13,19 @@ import utilities.LoggerLoad;
 import webdriver.DriverFactory;
 
 public class PremiumUser_HomePage {
-	WebDriver driver = DriverFactory.getDriver();
+	private WebDriver driver;
+    private PremiumUser premiumUser;
 
-	PremiumUser premiumUser = new PremiumUser(driver);
-
+    @Before
+    public void init() {
+    	
+        driver = DriverFactory.getDriver();
+        // Defensive null-check
+        if (driver == null) {
+            throw new RuntimeException("WebDriver is not initialized. Check your Hooks or DriverFactory.");
+        }
+        premiumUser = new PremiumUser(driver);
+    }
 	@Given("the user is in password auth page")
 	public void the_user_is_in_password_auth_page() throws Exception {
 		String filepath = "src/test/resources/testdata/SweetBalanceApplication.xlsx";
@@ -131,23 +142,23 @@ public class PremiumUser_HomePage {
 	public void the_user_should_see_activity_icon_in_blood_glucose() {
 		premiumUser.isActivitySvgVisible();
 	}
-
+	
 	@Then("the user should see Running icon in Physical Activity")
 	public void the_user_should_see_running_icon_in_physical_activity() {
-		// Write code here that turns the phrase above into concrete actions
-		throw new io.cucumber.java.PendingException();
+		 WebElement runningIcon = premiumUser.getIconByIndex(0); // assuming Running icon is 1st
+	        assert runningIcon.isDisplayed();
 	}
 
 	@Then("the user should see Pizza icon in Food Intake")
 	public void the_user_should_see_pizza_icon_in_food_intake() {
-		// Write code here that turns the phrase above into concrete actions
-		throw new io.cucumber.java.PendingException();
+		 WebElement pizzaIcon = premiumUser.getIconByIndex(1); // assuming Pizza icon is 2nd
+	        assert pizzaIcon.isDisplayed();
 	}
 
 	@Then("the user should see Pill icon in Medication")
 	public void the_user_should_see_pill_icon_in_medication() {
-		// Write code here that turns the phrase above into concrete actions
-		throw new io.cucumber.java.PendingException();
+		WebElement pillIcon = premiumUser.getIconByIndex(2); // assuming Pill icon is 3rd
+        assert pillIcon.isDisplayed();
 	}
 
 }

@@ -5,6 +5,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -20,18 +21,20 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class PremiumUser {
-    private WebDriver driver;
-    private WebDriverWait wait;
-  
-    ConfigReader config = new ConfigReader();
-    public PremiumUser(WebDriver driver) {
-        this.driver = driver;
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        PageFactory.initElements(driver, this);
+	  private WebDriver driver;
+	    private WebDriverWait wait;
+	  
+	    ConfigReader config = new ConfigReader();
+	    public PremiumUser(WebDriver driver) {
+	        this.driver = driver;
+	        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+	        PageFactory.initElements(driver, this);
 
-    }
+	    }
+
 
     // Buttons and inputs
     
@@ -120,10 +123,29 @@ public class PremiumUser {
 
     @FindBy(xpath = "//button[span[text()='Medication']]")
     private WebElement medicationBtn;
-    
-    @FindBy(css = "svg[class*='lucide-activity']")
-    private WebElement activitySvgIcon;
+  
+    @FindBy(css = "svg.lucide-activity")
+    private List<WebElement> activityIcons;
 
+    public WebElement getSecondActivityIcon() {
+        if (activityIcons != null && activityIcons.size() >= 2) {
+            return activityIcons.get(1); // index 1 = second element
+        } else {
+            throw new NoSuchElementException("Second activity icon not found");
+        }
+    }
+
+    @FindBy(css = "main button.flex.flex-col.items-center svg")
+    private List<WebElement> allIcons;
+
+    // Get icon by index (0-based)
+    public WebElement getIconByIndex(int index) {
+        if (allIcons.size() > index) {
+            return allIcons.get(index);
+        } else {
+            throw new IndexOutOfBoundsException("Icon at index " + index + " not found");
+        }
+    }
 
     @FindBy(xpath = "//h2[text()='Choose Your Challenge']")
     private WebElement challengeHeader;
@@ -256,12 +278,17 @@ public class PremiumUser {
         return bloodGlucoseBtn.getText().trim();
     }
     public boolean isActivitySvgVisible() {
-        LoggerLoad.info("Checking if activity SVG icon is visible near blood glucose text...");
-        return activitySvgIcon.isDisplayed();
+        LoggerLoad.info("Checking if second activity SVG icon is visible near blood glucose text...");
+        try {
+            return getSecondActivityIcon().isDisplayed();
+        } catch (NoSuchElementException e) {
+            LoggerLoad.error("Second activity SVG icon not found.");
+            return false;
+        }
     }
-    WebElement svgIcon = new WebDriverWait(driver, Duration.ofSeconds(10))
-    	    .until(ExpectedConditions.visibilityOfElementLocated(
-    	        By.cssSelector("main div:nth-child(3) div button.flex.flex-col.items-center svg")));
+//    WebElement svgIcon = new WebDriverWait(driver, Duration.ofSeconds(10))
+//    	    .until(ExpectedConditions.visibilityOfElementLocated(
+//    	        By.cssSelector("main div:nth-child(3) div button.flex.flex-col.items-center svg")));
 
 
     public String getPhysicalActivityText() {
