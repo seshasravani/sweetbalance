@@ -27,19 +27,47 @@ public class LoginPages {
 	@FindBy(xpath = "//h1[text()='Welcome back']")
 
 		private WebElement welcomeText;
-//		@FindBy(id = "id_username")
-//		private WebElement Username;
+
 	@FindBy(xpath = "//button[contains(text(), 'Login')]")
        private WebElement login;
-//		@FindBy(xpath = "//div[contains(text(),'password_mismatch:The two')]")
-//		private WebElement Passwordmismatch;
-//		@FindBy(linkText = "Register")
-//		private WebElement Registerlinktext;
-//		@FindBy(linkText = "Sign in")
-//		private WebElement Signinlinktext;
+
+	@FindBy(xpath = "//p[text()='Sign in to your account or create a new one']")
+	private WebElement subText;
 	
+    @FindBy(xpath = "//*[@id='root']/div[1]/div/button")
+	private WebElement closeButton;
+    
+    @FindBy(xpath = "//*[@id='root']/div[1]/div/div[2]/p")
+    private WebElement tncText;
+
+
+//    @FindBy(xpath = "//input[@placeholder='Enter email']")
+//    private WebElement enterEmailInput;
+    
+    @FindBy(xpath = "//*[@id=\"root\"]/div[1]/div/div[2]/form/div")
+    private WebElement enterEmailInput;
+    
+    
+    
+    @FindBy(xpath = "//input[@placeholder='Enter email']")
+  private WebElement phText;
+  
+    @FindBy(xpath = "//button[normalize-space()='Continue with email']")
+    private WebElement continueWithEmailButton;
+    
+    @FindBy(xpath = "//button[text()='Continue with Google']")
+    private WebElement contWithGglBtn;
+    
+    @FindBy(xpath = "//span[text()='OR']")
+    private WebElement orSeparator;
+
+
+
+    
+    
+ 
 	
-	 
+
 
 
 	
@@ -53,4 +81,39 @@ public class LoginPages {
 	    return welcomeText;
 	}
 
+	
+	public WebElement getsubText() {
+	    return subText;
+	}
+	
+//	public void clickCloseButton() {
+//	    closeButton.click();
+//	}
+
+	
+	public WebElement getCloseButton() {
+	    return closeButton;
+	}
+	
+	public WebElement getEnterEmailInput() {
+        return enterEmailInput;
+    }
+	public String getEmailPlaceholderText() {
+	    return phText.getDomAttribute("placeholder");
+	}
+	public WebElement getContinueWithEmailButton() {
+	    return continueWithEmailButton;
+	}
+
+	public WebElement getContWithGglBtn() {
+	    return contWithGglBtn;
+	}
+	
+	public boolean isOrSeparatorDisplayed() {
+        return orSeparator.isDisplayed();
+    }
+
+	public WebElement getTncText() {
+	    return tncText;
+	}
 }
