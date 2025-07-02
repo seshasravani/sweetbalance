@@ -11,7 +11,7 @@ import io.cucumber.junit.Cucumber;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-		features = {"src/test/resources/Feature"},
+		features = {"src/test/resources/Feature/PremiumUser_Homepage.feature"},
 
     glue = {"stepDefinitions", "hooks"},
     dryRun = false,
