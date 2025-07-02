@@ -63,3 +63,5 @@ Feature: Home Page Validation for Registered Premium Account User
 
   Scenario: Verify icon for Medication
     Then the user should see Pill icon in Medication
+    
+   
