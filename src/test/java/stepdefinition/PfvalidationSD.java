@@ -19,7 +19,7 @@ import utilities.ExcelReader;
 import webdriver.DriverFactory;
 import utilities.LoggerLoad;
 
-public class Pfvalidation {
+public class PfvalidationSD {
 	
 	WebDriver driver = DriverFactory.getDriver();  
     LoginPages loginPages = new LoginPages(driver); 
