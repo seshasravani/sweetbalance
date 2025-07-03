@@ -18,7 +18,7 @@ Feature: Premium User Logbook Functionality for Physical Activity
   Scenario: Verify the presence of icons beside title physical activity
     Given User is on the homepage
     When User navigate to logbook page
-    Then User should see the icons on left side of title
+    Then User should see Icon  on the left side of "Physical Activity" title
     
   Scenario: Verify last 7 days are displayed on X-axis
     Given User is on the homepage

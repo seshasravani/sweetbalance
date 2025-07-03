@@ -10,8 +10,8 @@ Feature: Premium User Exercise Schedule Functionality
     Then "View Full Schedule" button is displayed on the right
     
   Scenario: Verify navigation to "Today's Exercise Schedule" page
-    Given User is on the homepage
-    When User clicks the "View Full Schedule" button
+    Given User is in the Exercise section
+    When User clicks the View Full Schedule button
     Then User is redirected to "Today's Exercise Schedule" page
     
   Scenario: Verify "Warm Up" tab is displayed
@@ -116,18 +116,18 @@ Feature: Premium User Exercise Schedule Functionality
     Then "Mark As Completed" button is displayed for all three sections
     
   Scenario: Verify success dialog is shown after marking as completed
-    Given User is on the homepage
-    When User clicks the "Mark As Completed" button
+    Given User is in the Exercise section
+    When User clicks the Mark As Completed button
     Then Success dialog is shown
     
   Scenario: Verify button status changes to "Completed"
-    Given User is on the homepage
-    When User clicks the "Mark As Completed" button
+    Given User is in the Exercise section
+    When User clicks the Mark As Completed button
     Then Button changes to "Completed"
     
   Scenario: Verify undo option is displayed after marking completed
-    Given User is on the homepage
-    When User clicks the "Mark As Completed" button
+    Given User is in the Exercise section
+    When User clicks the Mark As Completed button
     Then Undo option is visible
     
   Scenario: Verify button reverts back after undo
@@ -158,7 +158,7 @@ Feature: Premium User Exercise Schedule Functionality
   Scenario: Verify warm-up exercise name
     Given User is in the Exercise section 
     When User clicks "view full schedule"
-    Then Exercise name should be visible
+    Then "Warm Up" Exercise name should be visible
     
   Scenario: Verify warm-up exercise description
     Given User is in the Exercise section 

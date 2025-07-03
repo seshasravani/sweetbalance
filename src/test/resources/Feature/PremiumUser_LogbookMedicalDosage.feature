@@ -17,7 +17,7 @@ Feature: Premium User Logbook Functionality for Medical Dosage
   Scenario: Verify the icon beside medical dosage
     Given User is on the homepage
     When User navigate to logbook page
-    Then User should see the icon on left side of title
+    Then User should see Icon  on the left side of "Medical Dosage" title
     
   Scenario: Verify the Y-axis has text "Number of Doses"
     Given User is on the homepage

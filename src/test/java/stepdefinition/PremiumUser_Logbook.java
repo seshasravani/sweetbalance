@@ -3,72 +3,114 @@ package stepdefinition;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.cucumber.java.Before;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.testng.Assert;
+
+import Pom.PremiumUser;
+import Pom.PF_PremiumUser_Logbook;
+import utilities.LoggerLoad;
+import webdriver.DriverFactory;
 
 public class PremiumUser_Logbook {
+	private WebDriver driver;
+    private PremiumUser premiumUser;
+    private PF_PremiumUser_Logbook logbookPage;
+    
+
+    @Before
+    public void init() {
+    	
+        driver = DriverFactory.getDriver();
+        // Defensive null-check
+        if (driver == null) {
+            throw new RuntimeException("WebDriver is not initialized. Check your Hooks or DriverFactory.");
+        }
+        premiumUser = new PremiumUser(driver);
+        logbookPage = new PF_PremiumUser_Logbook(driver);
+    }
 	
 	@When("User navigate to logbook page")
 	public void user_navigate_to_logbook_page() {
-	    
+	    premiumUser.clickLogbook();
 	    
 	}
 
 	@Then("User should see Blood Glucose Tracker")
 	public void user_should_see_blood_glucose_tracker() {
-	    
+		Assert.assertTrue(logbookPage.isBloodGlucoseTrackerVisible(), "Blood Glucose Teacker is not seen");
 	    
 	}
 
 	@Then("User should see {string} displayed in purple")
 	public void user_should_see_displayed_in_purple(String string) {
-	    
+		Assert.assertTrue(logbookPage.isFastingTextViolet(), "Fasting is not displayed in purple");
 	    
 	}
 	
 	@Then("User should see the range for {string} be {string}")
-	public void user_should_see_the_range_for_be(String string, String string2) {
-	    
+	public void user_should_see_the_range_for_be(String state, String range) {
+		switch(state) {
+		case "Fasting":
+			Assert.assertTrue(logbookPage.isFastingRangeVisible(range), "Fasting range is not displayed correctly");
+			break;
+		case "Pre-Meal":
+			Assert.assertTrue(logbookPage.isPreMealRangeVisible(range), "Pre-Meal range is not displayed correctly");
+			break;
+		case "Post-Meal":
+			Assert.assertTrue(logbookPage.isPostMealRangeVisible(range), "Post-Meal range is not displayed correctly");
+			break;
+		case "Bedtime":
+			Assert.assertTrue(logbookPage.isBedtimeRangeVisible(range), "Bedtime range is not displayed correctly");
+			break;
+		default:
+			break;
+			}
 	    
 	}
 	
 	@Then("User should see {string} displayed in green")
 	public void user_should_see_displayed_in_green(String string) {
-	    
+		Assert.assertTrue(logbookPage.isPreMealTextEmberald(), "Pre-Meal is not displayed in green");
 	    
 	}
 
 	@Then("User should see {string}  displayed in yellow")
 	public void user_should_see_displayed_in_yellow(String string) {
-	    
+		Assert.assertTrue(logbookPage.isPostMealTextAmber(), "Post-meal is not displayed in yellow");
 	    
 	}
 
 	@Then("User should see {string} displayed in red")
 	public void user_should_see_displayed_in_red(String string) {
-	    
+		Assert.assertTrue(logbookPage.isBedtimeTextRed(), "Bedtime is not displayed in red");
 	    
 	}
 
 	@Then("User should see the X-axis display the last {int} days ending today")
 	public void user_should_see_the_x_axis_display_the_last_days_ending_today(Integer int1) {
-	    
+		Assert.assertTrue(logbookPage.isXAxisLast7DaysCorrect(), "X-axis displays the incorrect last 7 days ending today");
 	    
 	}
 
 	@Then("User should see Y-axis minimum value  {int}")
 	public void user_should_see_y_axis_minimum_value(Integer int1) {
-	    
+		Assert.assertTrue(logbookPage.isYAxisMinCorrectBloodGlucose(int1), "Y-axis minimum value is incorrect");
 	    
 	}
 
 	@Then("User should see X-axis Maximum value {int}")
 	public void user_should_see_x_axis_maximum_value(Integer int1) {
+		Assert.assertTrue(logbookPage.isYAxisMaxCorrectBloodGlucose(int1), "Y-axis maximum value is incorrect");
 	    
 	    
 	}
 
 	@Then("User should see Meal & Nutrition Section")
 	public void user_should_see_meal_nutrition_section() {
-	    
+	    Assert.assertTrue(logbookPage.isMealNutritionVisible(), "Meal & Nutrition Section is not visible");
 	    
 	}
 
@@ -79,32 +121,52 @@ public class PremiumUser_Logbook {
 	}
 
 	@Then("User should see Icon  on the left side of {string} title")
-	public void user_should_see_icon_on_the_left_side_of_title(String string) {
-	    
-	    
+	public void user_should_see_icon_on_the_left_side_of_title(String section) {
+	    switch(section) {
+	    case "Meal & Nutrition":
+	    	Assert.assertTrue(logbookPage.isMealNutritionIconLeftOfTitle(), "Icon is not on the left side of Meal & Nutrition");
+	    	break;
+	    case "Medical Dosage":
+	    	Assert.assertTrue(logbookPage.isMedicalDosageIconLeftOfTitle(), "Icon is not on the left side of Medical Dosage");
+	    	break;
+	    case "Physical Activity":
+	    	Assert.assertTrue(logbookPage.isPhysicalActivityIconLeftOfTitle(), "Icon is not on the left side of Physical Activity");
+	    	break;
+	    default:
+	    	break;
+	    }
 	}
 
 	@Then("User should see the section {string}")
-	public void user_should_see_the_section(String string) {
+	public void user_should_see_the_section(String section) {
 	    
-	    
+		switch(section) {
+		case "7-Day Aggregate Nutrition":
+			Assert.assertTrue(logbookPage.isDay7AggregateNutritionSectionVisible(), "7-Day Aggregate Nutrition is not displayed correctly");
+			break;
+		case "Daily Nutrition Breakdown":
+			Assert.assertTrue(logbookPage.isDailyNutritionSectionVisible(), "Daily Nutrition Breakdown is not displayed correctly");
+			break;
+		default:
+			break;
+			}
 	}
 
 	@Then("User should see carbs text colour pink")
 	public void user_should_see_carbs_text_colour_pink() {
 	    
-	    
+		Assert.assertTrue(logbookPage.isCarbsTextPink(), "Carbs text is not pink");
 	}
 
 	@Then("User should see protein Text colour blue")
 	public void user_should_see_protein_text_colour_blue() {
-	    
+		Assert.assertTrue(logbookPage.isProteinTextBlue(), "Protein text is not blue");
 	    
 	}
 
 	@Then("User should see Fats text colour yellow")
 	public void user_should_see_fats_text_colour_yellow() {
-	    
+		Assert.assertTrue(logbookPage.isFatsTextYellow(), "Fat text is not yellow");
 	    
 	}
 
@@ -192,11 +254,6 @@ public class PremiumUser_Logbook {
 	    
 	}
 
-	@Then("User should see the icons on left side of title")
-	public void user_should_see_the_icons_on_left_side_of_title() {
-	    
-	    
-	}
 
 	@Then("User should see exactly {int} statistic cards displayed horizontally")
 	public void user_should_see_exactly_statistic_cards_displayed_horizontally(Integer int1) {

@@ -32,7 +32,7 @@ Feature: Premium User Logbook Functionality for Blood Glucose
   Scenario: Verify pre-meal glucose type range displayed
     Given User is on the homepage
     When User navigate to logbook page
-    Then User should see the range for "pre meal" be "70-130 mg/dL"
+    Then User should see the range for "Pre-Meal" be "70-130 mg/dL"
     
   Scenario: Verify colour codes for Post-Meal
     Given User is on the homepage
@@ -42,7 +42,7 @@ Feature: Premium User Logbook Functionality for Blood Glucose
   Scenario: Verify Post-meal glucose type range displayed
     Given User is on the homepage
     When User navigate to logbook page
-    Then User should see the range for "post meal" be "<180 mg/dL"
+    Then User should see the range for "Post-Meal" be "<180 mg/dL"
     
   Scenario: Verify colour codes for Bedtime
     Given User is on the homepage
