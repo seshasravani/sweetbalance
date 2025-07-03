@@ -37,7 +37,10 @@
     </plugins>
     </pluginManagement>
     </build>
-  
+  <properties>
+  <maven.compiler.source>23</maven.compiler.source>
+  <maven.compiler.target>23</maven.compiler.target>
+</properties>
     <dependencies>
 	  <dependency>
 	  	<groupId>com.codoid.products</groupId>
@@ -163,7 +166,8 @@
           <artifactId>freemarker</artifactId>
           <version>2.3.33</version>
     </dependency>
-	
+    
+
    </dependencies>
     
         
