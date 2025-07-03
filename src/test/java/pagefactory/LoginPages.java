@@ -64,8 +64,12 @@ public class LoginPages {
     @FindBy(xpath = "//span[text()='OR']")
     private WebElement orSeparator;
 
-    @FindBy(xpath = "//input[@placeholder='Enter your password']")
+//    @FindBy(xpath = "//input[@placeholder='Enter your password']")
+//    private WebElement passwordField;
+    
+    @FindBy(xpath = "/html/body/div/div[1]/div/div[2]/form/div[1]/div/input")
     private WebElement passwordField;
+
     
     @FindBy(xpath = "//p[contains(text(), 'Please enter a valid email')]")
     private WebElement emailErrorMessage;
@@ -158,8 +162,14 @@ public class LoginPages {
     	continueWithEmailButton.click();
     }
     
-    public void enterPassword(String password) {
+    public void enterPassword(String password) throws InterruptedException {
+    	Thread.sleep(2000);
+
+//    	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+//        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@placeholder='Enter your password']")));
+        passwordField.click();
         passwordField.clear();
+        passwordField.click();
         passwordField.sendKeys(password);
     }
         
@@ -172,11 +182,14 @@ public class LoginPages {
         }
 
         public boolean isSignInButtonDisplayed() {
+        	
             return signInButton.isDisplayed();
         }
 
         
         public void clickSignInButton() {
+        	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.elementToBeClickable(signInButton));
             signInButton.click();
         }
 

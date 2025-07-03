@@ -35,8 +35,19 @@ Then User should see text Enter your password as placeholder in password field
 
 Scenario: Verify password input accepts valid existing user
 Given User is on the login page
-When Registered user clicks sign in after entering password
+When Registered user clicks sign in after entering email and password
 Then User should be navigated to home page
+
+Scenario: Verify email input accepts valid new email
+Given User is on the login page
+When Unregistered user clicks continue with email button after entering a valid new email
+Then User should get Complete your profile form
+
+
+
+
+
+
 
 
 
