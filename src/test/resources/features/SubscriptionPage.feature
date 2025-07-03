@@ -2,8 +2,8 @@ Feature: Subscription page validation
 
 Background: User completes onboarding process
 
-Given User is in last step for onboarding process
-When User clicks submit button  ( Check notes)
+Given User is in the homepage
+When User clicks view full plan button in homepage
 
 Scenario: Verify Daily Meal Plan availability
 Then Both Free and Premium should show Daily Meal Plan as available
@@ -43,7 +43,7 @@ Then It should display "Free Account"
 
 Scenario: Verify Premium Account label 
 Then It should display "Premium Account" 
- 
+
 Scenario: Verify unavailable features are marked with gray X
 Then Features not included should have gray X icons
 

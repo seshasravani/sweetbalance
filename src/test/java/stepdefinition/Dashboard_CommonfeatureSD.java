@@ -58,14 +58,14 @@ public void user_should_see_the_message(String expectedMessage) {
 }
     
 @Then("User should see the text {string}")
-public void user_should_see_the_text(String String) {
+public void user_should_see_the_text(String string) {
    // String actualText = dashboard.getBelowWelcomeMessageText();
     //Assert.assertEquals(actualText.trim(), expectedText.trim(), "Text below welcome message does not match");
     //Assert.assertTrue(dashboard.isBelowWelcomeTextDisplayed(), "Expected description text not displayed.");
 }
 
 @Then("User should see {string} button")
-public void user_should_see_button(String String) {
+public void user_should_see_button(String string) {
    // switch (buttonText) {
    // case "Upgrade to Premium":
       //  assertTrue(dashboard.isUpgradeToPremiumVisible(), "'Upgrade to Premium' button is not visible");
@@ -88,10 +88,7 @@ public void user_should_see_the_header_with_correct_spelling(String string) {
 
 @Then("User should see all the fields under Account Information section")
 public void user_should_see_all_the_fields_under_account_information_section() {
-	//assertTrue(dashboard.isSuccessMessageDisplayed() || dashboard.isErrorMessageDisplayed() || true, 
-           // "Save Changes button is not visible"); // Placeholder, update as per actual implementation
     Assert.assertTrue(dashboard.isAccountInformationDisplayed(), "Not all account information fields are visible.");
-
 }
 
 //validate free account
