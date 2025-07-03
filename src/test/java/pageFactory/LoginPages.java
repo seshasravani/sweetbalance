@@ -1,5 +1,6 @@
 package pageFactory;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class LoginPages {
 	
@@ -60,6 +63,29 @@ public class LoginPages {
     
     @FindBy(xpath = "//span[text()='OR']")
     private WebElement orSeparator;
+
+    @FindBy(xpath = "//input[@placeholder='Enter your password']")
+    private WebElement passwordField;
+    
+    @FindBy(xpath = "//p[contains(text(), 'Please enter a valid email')]")
+    private WebElement emailErrorMessage;
+    
+   // @FindBy(xpath = "//button[text()='Sign in']")
+    @FindBy(xpath = "//button[contains(text(), 'Sign in')]")
+    private WebElement signInButton;
+    
+    @FindBy(xpath = "//*[@id='root']/div[1]/div/div[2]/div/p[2]")  // update with actual locator
+    private WebElement subTextEmailElement;
+    
+    @FindBy(xpath = "//button[text()='Forgot password?']")
+    private WebElement forgotPasswordButton;
+
+    
+    @FindBy(xpath = "//input[@placeholder='Enter your password']")
+    private WebElement passwordInput;
+
+//input[@placeholder='Enter your password']
+
 
 
 
@@ -116,4 +142,72 @@ public class LoginPages {
 	public WebElement getTncText() {
 	    return tncText;
 	}
+	//****************************  Actions ******************************//
+	
+	public void enterEmail(String email) {
+       // enterEmailInput.clear();
+//        enterEmailInput.clear();
+//        enterEmailInput.sendKeys(email);
+		
+		 phText.clear();
+	       phText.sendKeys(email);
+	    }
+    
+
+    public void clickContinueWithEmail() {
+    	continueWithEmailButton.click();
+    }
+    
+    public void enterPassword(String password) {
+        passwordField.clear();
+        passwordField.sendKeys(password);
+    }
+        
+        public WebElement getPasswordField() {
+            return passwordField;
+        }
+        
+        public String getEmailErrorText() {
+            return emailErrorMessage.getText();
+        }
+
+        public boolean isSignInButtonDisplayed() {
+            return signInButton.isDisplayed();
+        }
+
+        
+        public void clickSignInButton() {
+            signInButton.click();
+        }
+
+        public WebElement getSignInButton() {
+            return signInButton;
+        }
+
+    
+        public String getSubTextEmail() {
+        	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(subTextEmailElement));
+            return subTextEmailElement.getText();
+        }
+        
+        public void clickForgotPassword() {
+            forgotPasswordButton.click();
+        }
+
+        public boolean isForgotPasswordDisplayed() {
+        	
+        	 WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+             wait.until(ExpectedConditions.visibilityOf(forgotPasswordButton));
+            return forgotPasswordButton.isDisplayed();
+        }
+
+        public boolean isPasswordFieldDisplayed() {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(passwordInput));
+            return passwordInput.isDisplayed();
+        }
+        
+        
+
 }

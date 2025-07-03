@@ -19,6 +19,8 @@ import webdriver.DriverFactory;
 public class Sweet_login_functional {
 	 WebDriver driver = DriverFactory.getDriver();  // get the driver from DriverFactory
 	    LoginPages loginPages = new LoginPages(driver);  // pass that driver to page object
+	    private String validemail;
+	    private String validpassword;
 	
 	
 	@Given("User is on the login page")
@@ -32,15 +34,15 @@ public class Sweet_login_functional {
         List<Map<String, String>> data = reader.getDataAll("Sheet1");
 
         // Using 3rd row (index 2)
-        String email = data.get(2).get("Email");
-        String password = data.get(2).get("Password");
+         validemail = data.get(2).get("Email");
+        validpassword = data.get(2).get("Password");
 
-        loginPages.enterEmail(email);
+        loginPages.enterEmail(validemail);
         loginPages.clickContinueWithEmail();
 
         // You can store/use password later if needed
-        System.out.println("Email used: " + email);
-        System.out.println("Password from Excel: " + password);
+        System.out.println("Email used: " + validemail);
+        System.out.println("Password from Excel: " + validpassword);
 	    
 	}
 
@@ -52,8 +54,86 @@ public class Sweet_login_functional {
 		    Assert.assertTrue(loginPages.getPasswordField().isDisplayed());
 	    
 	}
+	
+	//invalid email
+	@When("User enters an invalid email")
+	public void user_enters_an_invalid_email() {
+		
+		ExcelReader reader = new ExcelReader("src/test/resources/testdata/SweetBalanceApplication.xlsx");
+        List<Map<String, String>> data = reader.getDataAll("Sheet1");
+
+        // Using 4rd row (index 3)
+        String email = data.get(3).get("Email");
+        String password = data.get(3).get("Password");
+
+        loginPages.enterEmail(email);
+        loginPages.clickContinueWithEmail();
+
+        // You can store/use password later if needed
+        System.out.println("Email used: " + email);
+        System.out.println("Password from Excel: " + password);
+	   
+	}
+
+	@Then("Email field should show validation error")
+	public void email_field_should_show_validation_error() {
+		
+		Assert.assertEquals(loginPages.getEmailErrorText(), "Please enter a valid email address");
+
+	}
+		
+		@Then("User should see Sign in button")
+		public void user_should_see_sign_in_button() {
+			
+			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+			wait.until(ExpectedConditions.visibilityOf(loginPages.getSignInButton()));
+
+		    Assert.assertTrue(loginPages.isSignInButtonDisplayed());
+		}
+		
+		@Then("User should see email id  in sub text")
+		public void user_should_see_email_id_in_sub_text() {
+		    
+			
+//			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+//			wait.until(ExpectedConditions.visibilityOf(loginPages.subTextEmailElement));
+
+			String displayedEmail = loginPages.getSubTextEmail();  
+
+	        // Assert they are equal
+	        Assert.assertEquals(displayedEmail, validemail);	
+		}
+		
+		@Then("User should see Forgot password? link")
+		public void user_should_see_forgot_password_link() {
+			Assert.assertTrue(loginPages.isForgotPasswordDisplayed());
+			//loginPages.clickForgotPassword();
+
+		}
+		
+		@Then("User should see text Enter your password as placeholder in password field")
+		public void user_should_see_text_as_placeholder_in_password_field() {
+			Assert.assertTrue(loginPages.isPasswordFieldDisplayed());
+		}
+		
+		@When("Registered user clicks sign in after entering password")
+		public void registered_user_clicks_sign_in_after_entering_password() {
+			loginPages.enterPassword(validpassword);
+			
+			loginPages.clickSignInButton();
+		    
+		}
+
+		@Then("User should be navigated to home page")
+		public void user_should_be_navigated_to_home_page() {
+			
+		    
+			
+		}
 
 
 
 
-}
+	}
+
+
