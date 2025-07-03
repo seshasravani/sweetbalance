@@ -22,7 +22,7 @@ public class LoginPages {
 	
 	public LoginPages(WebDriver driver) {
         this.driver = driver;
-        PageFactory.initElements(driver, this);  // <- This is required!
+        PageFactory.initElements(driver, this);  
     }
 	
 	//Web Locators
@@ -87,6 +87,25 @@ public class LoginPages {
     
     @FindBy(xpath = "//input[@placeholder='Enter your password']")
     private WebElement passwordInput;
+    
+    @FindBy(xpath = "/html/body/div/div[1]/div/div[2]/form/div[2]/input")
+    private WebElement fullNameInput;
+    
+    @FindBy(xpath = "/html/body/div/div[1]/div/div[2]/form/div[3]/input")
+    private WebElement usernameInput;
+    
+    @FindBy(xpath = "//input[@name='password']")
+    private WebElement inputPassword;
+    
+    @FindBy(id = "terms")
+    private WebElement termsCheckbox;
+    
+    @FindBy(xpath = "//*[@id='root']/div[1]/div/div[2]/form/button")
+    private WebElement createAccountButton;
+
+    
+
+
 
 //input[@placeholder='Enter your password']
 
@@ -149,9 +168,7 @@ public class LoginPages {
 	//****************************  Actions ******************************//
 	
 	public void enterEmail(String email) {
-       // enterEmailInput.clear();
-//        enterEmailInput.clear();
-//        enterEmailInput.sendKeys(email);
+     
 		
 		 phText.clear();
 	       phText.sendKeys(email);
@@ -165,8 +182,6 @@ public class LoginPages {
     public void enterPassword(String password) throws InterruptedException {
     	Thread.sleep(2000);
 
-//    	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-//        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@placeholder='Enter your password']")));
         passwordField.click();
         passwordField.clear();
         passwordField.click();
@@ -222,5 +237,55 @@ public class LoginPages {
         }
         
         
+//        public void enterFullName(String name) {
+//            fullNameInput.sendKeys(name);
+//        }
 
-}
+        
+        public boolean isFullNameFieldDisplayed() {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(fullNameInput));
+            return fullNameInput.isDisplayed();
+            
+        }
+        
+        public boolean isUsernameFieldDisplayed() {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(usernameInput));
+            return usernameInput.isDisplayed();
+        }
+        
+        public boolean isPasswordinputFieldDisplayed() {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(inputPassword));
+            return inputPassword.isDisplayed();
+        }
+
+        
+        public boolean isTermsCheckboxDisplayed() {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(termsCheckbox));
+            return termsCheckbox.isDisplayed();
+        }
+       
+        
+       // public boolean isCreateAccountButtonDisabled() {
+           // return !createAccountButton.isEnabled(); // true means it's disabled
+        	
+        //	return createAccountButton.isDisabled();
+        
+        
+        public boolean isCreateAccountButtonEnabled() {
+            return createAccountButton.isEnabled();
+        }
+
+        }
+
+
+
+
+
+
+        
+
+

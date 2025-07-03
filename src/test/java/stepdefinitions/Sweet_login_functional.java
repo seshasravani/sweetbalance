@@ -98,12 +98,8 @@ public class Sweet_login_functional {
 		public void user_should_see_email_id_in_sub_text() {
 		    
 			
-//			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-//			wait.until(ExpectedConditions.visibilityOf(loginPages.subTextEmailElement));
-
 			String displayedEmail = loginPages.getSubTextEmail();  
 
-	        // Assert they are equal
 	        Assert.assertEquals(displayedEmail, validemail);	
 	        LoggerLoad.info("Assertions valid email is" +validemail);
 		}
@@ -167,6 +163,8 @@ public class Sweet_login_functional {
 
 		@Then("User should get Complete your profile form")
 		public void user_should_get_complete_your_profile_form() {
+			
+			
 		    
 		}
 

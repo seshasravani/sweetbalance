@@ -1,5 +1,7 @@
 package stepdefinitions;
 
+import static org.testng.Assert.assertTrue;
+
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 
@@ -94,6 +96,11 @@ public class Sweet_login {
     		    
     		}
 
+    		
+    		@Then("Username input field should be displayed")
+    		public void username_input_field_should_be_displayed()
+    		{
+    	    }
 
 
     	   
