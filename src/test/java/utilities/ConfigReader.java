@@ -34,5 +34,10 @@ public class ConfigReader {
 	public static String getBrowserType() {
 		return browserType.get();
 		 }
+
+	 public static String getProperty(String key) {
+		 	return prop.getProperty(key);
+		 }
+	
 	}
 
