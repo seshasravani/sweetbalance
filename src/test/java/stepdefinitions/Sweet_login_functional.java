@@ -15,12 +15,15 @@ import io.cucumber.java.en.When;
 import pageFactory.LoginPages;
 import utilities.ExcelReader;
 import webdriver.DriverFactory;
+import utilities.LoggerLoad;
 
 public class Sweet_login_functional {
 	 WebDriver driver = DriverFactory.getDriver();  // get the driver from DriverFactory
 	    LoginPages loginPages = new LoginPages(driver);  // pass that driver to page object
 	    private String validemail;
 	    private String validpassword;
+	    
+	    
 	
 	
 	@Given("User is on the login page")
@@ -102,6 +105,7 @@ public class Sweet_login_functional {
 
 	        // Assert they are equal
 	        Assert.assertEquals(displayedEmail, validemail);	
+	        LoggerLoad.info("Assertions valid email is" +validemail);
 		}
 		
 		@Then("User should see Forgot password? link")
@@ -116,11 +120,27 @@ public class Sweet_login_functional {
 			Assert.assertTrue(loginPages.isPasswordFieldDisplayed());
 		}
 		
-		@When("Registered user clicks sign in after entering password")
-		public void registered_user_clicks_sign_in_after_entering_password() {
-			loginPages.enterPassword(validpassword);
+		@When("Registered user clicks sign in after entering email and password")
+		public void registered_user_clicks_sign_in_after_entering_password() throws InterruptedException {
 			
-			loginPages.clickSignInButton();
+			ExcelReader reader = new ExcelReader("src/test/resources/testdata/SweetBalanceApplication.xlsx");
+	        List<Map<String, String>> data = reader.getDataAll("Sheet1");
+
+	        // Using 3rd row (index 2)
+	         validemail = data.get(2).get("Email");
+	        validpassword = data.get(2).get("Password");
+
+	        loginPages.enterEmail(validemail);
+	        loginPages.clickContinueWithEmail();
+	       
+	         loginPages.enterPassword(validpassword);
+
+	        loginPages.clickSignInButton();
+	       
+			
+			LoggerLoad.info("User successfully signed in with password: " + validpassword);
+			
+			
 		    
 		}
 
@@ -129,6 +149,25 @@ public class Sweet_login_functional {
 			
 		    
 			
+		}
+		
+		
+		@When("Unregistered user clicks continue with email button after entering a valid new email")
+		public void unregistered_user_clicks_continue_with_email_button_after_entering_a_valid_new_email() {
+		    
+			ExcelReader reader = new ExcelReader("src/test/resources/testdata/SweetBalanceApplication.xlsx");
+	        List<Map<String, String>> data = reader.getDataAll("Sheet1");
+
+	        // Using 3rd row (index 2)
+	         String newvalidemail = data.get(4).get("Email");
+	        
+	        loginPages.enterEmail(newvalidemail);
+	        loginPages.clickContinueWithEmail();
+		}
+
+		@Then("User should get Complete your profile form")
+		public void user_should_get_complete_your_profile_form() {
+		    
 		}
 
 
