@@ -15,7 +15,7 @@ import utilities.ConfigReader;
 @Listeners(ITestListenerImpl.class)
 @CucumberOptions(		//Cucumber Test Runner using TestNG
 
-		plugin = {"pretty","html:target/dsalgo.html","html:target/cucumber-reports/reports.html",
+		plugin = {"pretty","html:target/SweetBalance.html","html:target/cucumber-reports/reports.html",
 				 "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm",
 		         "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:target/extent-report.html",// Generates readable and HTML reports
 		          "rerun:target/failedrerun.txt",
