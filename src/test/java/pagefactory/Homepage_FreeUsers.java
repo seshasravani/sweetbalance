@@ -232,7 +232,6 @@ public class Homepage_FreeUsers {
    		 CommonMethods.waitForElementVisibilityOf(TodaysMealPlan);
         return TodaysMealPlan.isDisplayed();
     }
-
 }
 
 

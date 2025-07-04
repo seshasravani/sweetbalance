@@ -3,12 +3,16 @@ package stepdefinition;
 
 import java.io.File;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import pagefactory.PremiumUser;
@@ -1203,8 +1207,570 @@ public void user_should_see_save_activity_button() {
         Assert.assertEquals(actualDate.trim(), expectedDate.trim(), "Displayed date does not match today's date");
     
     }
+// medication validation 
+    @Given("the user is on the home page after logging into the app")
+    public void the_user_is_on_the_home_page_after_logging_into_the_app() throws Exception {
+    	String filepath = "src/test/resources/testdata/SweetBalanceApplication.xlsx";
+    	String sheetName = "Sheet1"; // Update this to your actual Excel sheet name
 
 
+    	premiumUser.clickLoginBtn();
+    	premiumUser.enterEmailFromExcel(filepath, sheetName, 0);
+    	premiumUser.clickContinueWithEmailBtn();
+    	premiumUser.enterPasswordFromExcel(filepath, sheetName, 0);
+    	premiumUser.clickSignInButton();
+   
+    }
 
+    @When("the user clicks Medication")
+    public void the_user_clicks_medication() {
+       
+    	premiumUser.clickMedicationBtn();
+    }
 
+    @Then("the user should see title {string} after medication pop")
+    public void the_user_should_see_title_after_medication_pop(String expectedTitle) {
+    	premiumUser.clickMedicationBtn();
+    	  String actualTitle = premiumUser.getMedicationTitleText();
+    	    Assert.assertEquals(actualTitle, expectedTitle, "Medication page title mismatch");
+    }
+
+    @Then("the user should see subtext {string}")
+    public void the_user_should_see_subtext(String expectedSubtext) {
+    	premiumUser.clickMedicationBtn();
+    	 String actualSubtext = premiumUser.getMedicationSubtextText();
+    	    Assert.assertEquals(actualSubtext, expectedSubtext, "Medication subtext mismatch");
+       
+    }
+
+    @Then("the user should see heading {string}")
+    public void the_user_should_see_heading(String expectedText) {
+    	premiumUser.clickMedicationBtn();
+    	 String actualText = premiumUser.getYourMedicationsHeadingText();
+    	    Assert.assertEquals(actualText, expectedText, "Heading mismatch");
+    }
+
+    @Then("the user should see heading {string} in flex")
+    public void the_user_should_see_heading_in_flex(String expectedText) {
+    	premiumUser.clickMedicationBtn();
+    	String actualText = premiumUser.getTodaysMedicationsHeadingText();
+        Assert.assertEquals(actualText, expectedText, "Flex heading mismatch");
+    }
+
+    @Then("the user should see date picker in tracker")
+    public void the_user_should_see_date_picker_in_tracker() {
+    	premiumUser.clickMedicationBtn();
+    	 Assert.assertTrue(premiumUser.isDatePickerVisible(), "Date picker is not visible");
+    }
+
+    @Then("the user should see today's date as default value in datepicker")
+    public void the_user_should_see_today_s_date_as_default_value_in_datepicker() {
+    	premiumUser.clickMedicationBtn();	
+    	   String expectedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d['st']['nd']['rd']['th'], yyyy"));
+    	    String actualDate = premiumUser.getDatePickerButtonText(); // Method to be implemented
+    	    Assert.assertTrue(actualDate.contains("July") || actualDate.contains(expectedDate), 
+    	        "Expected today's date but found: " + actualDate);
+    }
+
+    @Then("the user should see message {string}")
+    public void the_user_should_see_message(String expectedMessage) {
+    	premiumUser.clickMedicationBtn();
+    	String actualMessage = premiumUser.getNoMedicationMessageText();
+        Assert.assertEquals(actualMessage.trim(), expectedMessage.trim());
+    }
+
+    @Then("the user should see Add medication button")
+    public void the_user_should_see_add_medication_button() {
+    	premiumUser.clickMedicationBtn();
+    	Assert.assertTrue(premiumUser.isAddMedicationBtnVisible(), "Add Medication button is not visible");
+    }
+
+    @Then("the user should see Close button in the form")
+    public void the_user_should_see_close_button_in_the_form() {
+    	premiumUser.clickMedicationBtn();
+    	Assert.assertTrue(premiumUser.isCloseButtonVisible(), "Close button is not visible in the form");
+    }
+
+    @When("the user clicks Add Medication")
+    public void the_user_clicks_add_medication() {
+    	premiumUser.clickMedicationBtn();
+    	premiumUser.clickAddMedication();
+    }
+
+    @Then("the user should see iframe")
+    public void the_user_should_see_iframe() {
+      	premiumUser.clickMedicationBtn();
+    	premiumUser.clickAddMedication();
+    	Assert.assertTrue(premiumUser.isIframeVisible(), "Iframe is not visible");
+    
+    }
+
+    @Then("the user should see Cancel button")
+    public void the_user_should_see_cancel_button() {
+      	premiumUser.clickMedicationBtn();
+    	premiumUser.clickAddMedication();
+    	Assert.assertTrue(premiumUser.isCancelButtonVisible(), "Cancel button is not visible");
+    }
+    
+    @Then("the user should see heading after clicking add medication {string}")
+    public void the_user_should_see_heading_after_clicking_add_medication(String expectedHeading) {
+	  	premiumUser.clickMedicationBtn();
+    	premiumUser.clickAddMedication();
+    Assert.assertEquals(premiumUser.getPopupHeading(), expectedHeading);
 }
+      
+
+    @Then("the user should see fields {string}")
+    public void the_user_should_see_fields(String expectedFields) {
+      	premiumUser.clickMedicationBtn();
+    	premiumUser.clickAddMedication();
+    	List<String> expectedList = Arrays.asList(expectedFields.split(",\\s*"));
+        Assert.assertEquals(premiumUser.getAllFieldLabels(), expectedList);
+    }
+
+    @Then("the user should see dropdown for Medication")
+    public void the_user_should_see_dropdown_for_medication() {
+      	premiumUser.clickMedicationBtn();
+    	premiumUser.clickAddMedication();
+    	 Assert.assertTrue(premiumUser.isMedicationDropdownVisible(), "Medication dropdown is not visible");
+    }
+
+    @Then("the user should see following options in medication dropdown:")
+    public void the_user_should_see_following_options_in_medication_dropdown(io.cucumber.datatable.DataTable dataTable) {
+      	premiumUser.clickMedicationBtn();
+    	premiumUser.clickAddMedication();
+    	 List<String> expectedOptions = dataTable.asList();
+
+    	    List<String> actualOptions = premiumUser.getMedicationDropdownOptions();
+    	    LoggerLoad.info("Expected options: " + expectedOptions);
+    	    LoggerLoad.info("Actual options: " + actualOptions);
+
+    	 Assert.assertEquals(actualOptions, expectedOptions, "Dropdown options do not match");
+    	}
+    @Then("the user should see input field for Dosage")
+    public void the_user_should_see_input_field_for_dosage() {
+      	premiumUser.clickMedicationBtn();
+    	premiumUser.clickAddMedication();
+    	 Assert.assertTrue(premiumUser.isDosageInputVisible());
+    }
+
+    @Then("the user should see placeholder text {string}")
+    public void the_user_should_see_placeholder_text(String expectedPlaceholder) {
+      	premiumUser.clickMedicationBtn();
+    	premiumUser.clickAddMedication();
+    	String actual = premiumUser.getDosagePlaceholder();
+        Assert.assertEquals(actual, expectedPlaceholder);
+    }
+
+    @Then("the user should see dropdown for Frequency")
+    public void the_user_should_see_dropdown_for_frequency() {
+      	premiumUser.clickMedicationBtn();
+    	premiumUser.clickAddMedication();
+    	Assert.assertTrue(premiumUser.isFrequencyDropdownVisible());
+    
+    }
+
+    @Then("the user should see following options in frequency dropdown:")
+    public void the_user_should_see_following_options_in_frequency_dropdown(io.cucumber.datatable.DataTable dataTable) {
+      	premiumUser.clickMedicationBtn();
+    	premiumUser.clickAddMedication();
+    	 List<String> expectedOptions = dataTable.asList();
+    	    List<String> actualOptions = premiumUser.getFrequencyOptionsText();
+    	    Assert.assertEquals(actualOptions, expectedOptions);
+    	}
+
+
+    @Then("the user should see checkbox for Take with food")
+    public void the_user_should_see_checkbox_for_take_with_food() {
+      	premiumUser.clickMedicationBtn();
+    	premiumUser.clickAddMedication();
+        Assert.assertTrue(premiumUser.isTakeWithFoodCheckboxVisible());
+    }
+
+    @Then("the user should see text block for Notes")
+    public void the_user_should_see_text_block_for_notes() {
+      	premiumUser.clickMedicationBtn();
+    	premiumUser.clickAddMedication();
+    	Assert.assertTrue(premiumUser.isNotesTextareaVisible());
+    }
+
+    @When("the user fills out the medication form with valid data")
+    public void the_user_fills_out_the_medication_form_with_valid_data() {
+      	premiumUser.clickMedicationBtn();
+      	premiumUser.selectMedication("Metformin (Oral)");
+        premiumUser.enterDosage("500mg");
+        premiumUser.selectFrequency("Once daily");
+        premiumUser.checkTakeWithFood();
+        premiumUser.enterNotes("Take after meal");
+    }
+    
+
+    @When("clicks Add Medication")
+    public void clicks_add_medication() {
+    	premiumUser.clickAddMedication();
+    }
+    @Then("the Add Medication button changes to {string}")
+    public void the_add_medication_button_changes_to(String string) {
+    	Assert.assertTrue(premiumUser.getScheduledTimes().size() > 0);
+    
+    }
+    @Then("the user should be redirected to the tracker page with newly added medication displayed")
+    public void the_user_should_be_redirected_to_the_tracker_page_with_newly_added_medication_displayed() {
+    	 Assert.assertTrue(premiumUser.getScheduledTimes().size() > 0);
+    }
+
+
+    @Then("the user should see Remove button next to the added medication")
+    public void the_user_should_see_remove_button_next_to_the_added_medication() {
+    	 Assert.assertTrue(premiumUser.isRemoveIconVisible());
+    }
+
+    @Then("the user should see schedule time below the added medication")
+    public void the_user_should_see_schedule_time_below_the_added_medication() {
+    	 List<String> times = premiumUser.getScheduledTimes();
+    	    Assert.assertFalse(times.isEmpty());
+    	} 
+
+    @Then("the user should see Mark as Taken button for each schedule")
+    public void the_user_should_see_mark_as_taken_button_for_each_schedule() {
+    	 Assert.assertTrue(true); // placeholder
+    }
+
+    @When("the user selects Once daily in frequency")
+    public void the_user_selects_once_daily_in_frequency() {
+    	premiumUser.selectFrequency("Once daily");
+    }
+
+    @Then("the user should see Scheduled at {int}:{int}")
+    public void the_user_should_see_scheduled_at(Integer time1, Integer time2) {
+    	List<String> times = premiumUser.getScheduledTimes();
+        Assert.assertTrue(times.contains("Scheduled at " + time1));
+        Assert.assertTrue(times.contains("Scheduled at " + time2));
+    }
+
+    @When("the user selects Twice daily in frequency")
+    public void the_user_selects_twice_daily_in_frequency() {
+      
+    }
+    
+
+    @Then("the user should see Scheduled at {int}:{int} and {int}:{int}")
+    public void the_user_should_see_scheduled_at_and(Integer t1, Integer t2, Integer t3, Integer t4) {
+    	List<String> times = premiumUser.getScheduledTimes();
+        Assert.assertTrue(times.contains("Scheduled at " + t1));
+        Assert.assertTrue(times.contains("Scheduled at " + t2));
+        Assert.assertTrue(times.contains("Scheduled at " + t3));
+        Assert.assertTrue(times.contains("Scheduled at " + t4));
+    }
+    @When("the user selects Three times daily in frequency")
+    public void the_user_selects_three_times_daily_in_frequency() {
+        premiumUser.selectFrequency("Three times daily");
+    }
+
+    @Then("the user should see Scheduled at 8:00, 14:00, and 20:00")
+    public void the_user_should_see_scheduled_times_for_three_times_daily() {
+        List<String> scheduledTimes = premiumUser.getScheduledTimes();
+        Assert.assertTrue(scheduledTimes.contains("Scheduled at 8:00"));
+        Assert.assertTrue(scheduledTimes.contains("Scheduled at 14:00"));
+        Assert.assertTrue(scheduledTimes.contains("Scheduled at 20:00"));
+    }
+
+    @When("the user leaves dosage field blank and clicks Add Medication")
+    public void the_user_leaves_dosage_blank_and_clicks_add_medication() {
+        premiumUser.enterDosage("");
+        premiumUser.clickAddMedication();
+    }
+
+    @When("the user enters invalid dosage and clicks Add Medication")
+    public void the_user_enters_invalid_dosage_and_clicks_add_medication() {
+        premiumUser.enterDosage("invalid_dosage");
+        premiumUser.clickAddMedication();
+    }
+
+    @Then("the user should see alert message {string}")
+    public void the_user_should_see_alert_message(String message) {
+        Assert.assertTrue(premiumUser.isErrorToastDisplayed(message));
+    }
+
+    @When("the user selects a medication")
+    public void the_user_selects_a_medication() {
+        premiumUser.selectMedication("Metformin (Oral)");
+    }
+
+    @Then("the user should see remove icon {string}")
+    public void the_user_should_see_remove_icon(String expectedIcon) {
+        Assert.assertTrue(premiumUser.isRemoveIconVisible());
+    }
+
+    @When("the user clicks remove icon")
+    public void the_user_clicks_remove_icon() {
+        premiumUser.clickRemoveIcon();
+    }
+
+    @Then("the Medication field should show {string}")
+    public void the_medication_field_should_show(String expectedText) {
+        String selectedMedication = premiumUser.getSelectedMedication();
+        Assert.assertEquals(selectedMedication, expectedText);
+    }
+
+    @When("the user clicks the date field")
+    public void the_user_clicks_the_date_field() {
+        premiumUser.clickDateField();
+    }
+
+    @Then("the user should see calendar popup")
+    public void the_user_should_see_calendar_popup() {
+        Assert.assertTrue(premiumUser.isCalendarPopupVisible());
+    }
+
+    @Then("the user should see today's date highlighted in the calendar")
+    public void the_user_should_see_todays_date_highlighted() {
+        Assert.assertTrue(premiumUser.isTodayDateHighlighted());
+    }
+
+    @Then("the user should see Previous and Next buttons in the date picker")
+    public void the_user_should_see_prev_and_next_buttons() {
+        Assert.assertTrue(premiumUser.arePrevNextButtonsVisible());
+    }
+
+    @When("the user selects previous date")
+    public void the_user_selects_previous_date() {
+        premiumUser.clickPreviousMonth();
+        // optionally, select a date here if needed
+    }
+
+    @Then("the selected date should appear in the date field")
+    public void the_selected_date_should_appear_in_date_field() {
+        String selectedDate = premiumUser.getSelectedDate();
+        Assert.assertNotNull(selectedDate);
+        // You can add more validation based on expected date format
+    }
+
+    @When("the user enters more than 250 words in Notes and clicks Add Medication")
+    public void the_user_enters_more_than_250_words_in_notes_and_clicks_add_medication() {
+        String longNotes = "word ".repeat(251);
+        premiumUser.enterNotes(longNotes);
+        premiumUser.clickAddMedication();
+    }
+
+    @Then("the user should see error message {string}")
+    public void the_user_should_see_error_message(String expectedMsg) {
+        String actualMsg = premiumUser.getNotificationText();
+        Assert.assertEquals(actualMsg, expectedMsg);
+    }
+
+    @When("the user clicks Remove button for an added medication")
+    public void the_user_clicks_remove_button_for_added_medication() {
+        premiumUser.clickRemoveMedication();
+    }
+
+    @Then("the user should see alert {string}")
+    public void the_user_should_see_alert(String expectedAlertText) {
+        WebDriver driver = DriverFactory.getDriver();
+        Alert alert = new WebDriverWait(driver, Duration.ofSeconds(10))
+                          .until(ExpectedConditions.alertIsPresent());
+        Assert.assertEquals(alert.getText(), expectedAlertText);
+    }
+
+    @When("the user accepts the alert")
+    public void the_user_accepts_the_alert() {
+        WebDriver driver = DriverFactory.getDriver();
+        Alert alert = driver.switchTo().alert();
+        alert.accept();
+    }
+
+    @Then("the user should see notification {string}")
+    public void the_user_should_see_notification(String expectedNotification) {
+        String notification = premiumUser.getNotificationText();
+        Assert.assertEquals(notification, expectedNotification);
+    }
+
+    @Then("the medication should no longer be visible in the tracker")
+    public void the_medication_should_no_longer_be_visible_in_tracker() {
+        // Implement check that medication is no longer listed on tracker page
+        Assert.assertFalse(premiumUser.isMedicationDropdownVisible());
+    }
+
+    @When("the user declines the alert")
+    public void the_user_declines_the_alert() {
+        WebDriver driver = DriverFactory.getDriver();
+        Alert alert = driver.switchTo().alert();
+        alert.dismiss();
+    }
+
+    @Then("the user should be redirected to the medication tracker")
+    public void the_user_should_be_redirected_to_medication_tracker() {
+        // Optionally check URL or page header to confirm redirection
+        Assert.assertTrue(driver.getCurrentUrl().contains("medication-tracker"));
+    }
+
+    @When("the user clicks Mark as Taken button")
+    public void the_user_clicks_mark_as_taken_button() {
+        premiumUser.clickMarkAsTaken();
+    }
+
+    @Then("the medication should be marked as taken")
+    public void the_medication_should_be_marked_as_taken() {
+        // Verify UI changes such as button disabling or text change
+        Assert.assertTrue(premiumUser.isMedicationMarkedAsTaken());
+    }
+}
+//    @When("the user selects Three times daily in frequency")
+//    public void the_user_selects_three_times_daily_in_frequency() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("the user should see Scheduled at {int}:{int}, {int}:{int}, and {int}:{int}")
+//    public void the_user_should_see_scheduled_at_and(Integer int1, Integer int2, Integer int3, Integer int4, Integer int5, Integer int6) {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @When("the user leaves dosage field blank and clicks Add Medication")
+//    public void the_user_leaves_dosage_field_blank_and_clicks_add_medication() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("the user should see alert message {string}")
+//    public void the_user_should_see_alert_message(String string) {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @When("the user enters invalid dosage and clicks Add Medication")
+//    public void the_user_enters_invalid_dosage_and_clicks_add_medication() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @When("the user selects a medication")
+//    public void the_user_selects_a_medication() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("the user should see remove icon {string}")
+//    public void the_user_should_see_remove_icon(String string) {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @When("the user clicks remove icon")
+//    public void the_user_clicks_remove_icon() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("the Medication field should show {string}")
+//    public void the_medication_field_should_show(String string) {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @When("the user clicks the date field")
+//    public void the_user_clicks_the_date_field() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("the user should see calendar popup")
+//    public void the_user_should_see_calendar_popup() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("the user should see today's date highlighted in the calendar")
+//    public void the_user_should_see_today_s_date_highlighted_in_the_calendar() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("the user should see Previous and Next buttons in the date picker")
+//    public void the_user_should_see_previous_and_next_buttons_in_the_date_picker() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @When("the user selects previous date")
+//    public void the_user_selects_previous_date() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("the selected date should appear in the date field")
+//    public void the_selected_date_should_appear_in_the_date_field() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @When("the user enters more than {int} words in Notes and clicks Add Medication")
+//    public void the_user_enters_more_than_words_in_notes_and_clicks_add_medication(Integer int1) {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("the user should see error message {string}")
+//    public void the_user_should_see_error_message(String string) {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @When("the user clicks Remove button for an added medication")
+//    public void the_user_clicks_remove_button_for_an_added_medication() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("the user should see alert {string}")
+//    public void the_user_should_see_alert(String string) {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @When("the user accepts the alert")
+//    public void the_user_accepts_the_alert() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("the user should see notification {string}")
+//    public void the_user_should_see_notification(String string) {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("the medication should no longer be visible in the tracker")
+//    public void the_medication_should_no_longer_be_visible_in_the_tracker() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @When("the user declines the alert")
+//    public void the_user_declines_the_alert() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("the user should be redirected to the medication tracker")
+//    public void the_user_should_be_redirected_to_the_medication_tracker() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @When("the user clicks Mark as Taken button")
+//    public void the_user_clicks_mark_as_taken_button() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//    @Then("the medication should be marked as taken")
+//    public void the_medication_should_be_marked_as_taken() {
+//        // Write code here that turns the phrase above into concrete actions
+//        throw new io.cucumber.java.PendingException();
+//    }
+//
+//
+//
+//

@@ -585,6 +585,12 @@ public class PremiumUser {
 		// TODO Auto-generated method stub
 		return false;
 	}
+//	
+//	public String getAlertMessage() {
+//	    WebElement alertMessage;
+//		CommonMethods.waitForElementVisibilityOf(alertMessage);
+//	    return alertMessage.getText().trim();
+//	}
 
 	public List<String> getVisibleMealSectionButtonLabels() {
 		CommonMethods.waitForElementVisibilityOfAll(mealSectionButtons); // you may need to add this method in
@@ -1364,5 +1370,331 @@ public class PremiumUser {
 	public boolean isSaveButtonVisible() {
 		return saveFoodEntryButton.isDisplayed();
 	}
+	//medication validation
+    
+    @FindBy(xpath = "//h1[text()='Diabetes Medication Tracker']")
+    private WebElement medicationTitle;
+
+    @FindBy(xpath = "//p[contains(text(), 'Keep track of your medications')]")
+    private WebElement medicationSubtext;
+
+    public String getMedicationTitleText() {
+        return medicationTitle.getText().trim();
+    }
+
+    public String getMedicationSubtextText() {
+        return medicationSubtext.getText().trim();
+    }
+    @FindBy(xpath = "//h2[text()='Your Medications']")
+    private WebElement yourMedicationsHeading;
+
+    public String getYourMedicationsHeadingText() {
+        return yourMedicationsHeading.getText().trim();
+    }
+    @FindBy(xpath = "//h3[text()=\"Today's Medications\"]")
+    private WebElement todaysMedicationsHeading;
+
+    public String getTodaysMedicationsHeadingText() {
+        return todaysMedicationsHeading.getText().trim();
+    }
+    @FindBy(xpath = "//button[contains(@aria-haspopup, 'dialog') and contains(., 'July')]")
+    private WebElement datePickerBtn;
+    
+    @FindBy(xpath = "//h4[contains(text(),'No medications added yet')]")
+    private WebElement noMedicationHeader;
+
+    @FindBy(xpath = "//p[contains(text(),'Click the')]")
+    private WebElement noMedicationSubText;
+
+    @FindBy(xpath = "//button[contains(text(),'Add Medication')]")
+    private WebElement addMedicationButton;
+
+    @FindBy(xpath = "//button[contains(text(),'Close')]")
+    private WebElement closeFormButton;
+
+
+    public boolean isDatePickerVisibleonmedication() {
+        return datePickerButton.isDisplayed();
+    }
+    public String getDatePickerButtonText() {
+        CommonMethods.waitForElementVisibilityOf(datePickerButton); // WebElement representing the date button
+        return datePickerButton.getText().trim();
+    }
+    public String getNoMedicationMessageText() {
+        CommonMethods.waitForElementVisibilityOf(noMedicationHeader); // "No medications added yet"
+        CommonMethods.waitForElementVisibilityOf(noMedicationSubText); // "Click the 'Add Medication'..."
+        return noMedicationHeader.getText().trim() + "\n" + noMedicationSubText.getText().trim();
+    }
+    public boolean isAddMedicationBtnVisible() {
+        return CommonMethods.isElementVisible(addMedicationButton);
+    }
+    public boolean isCloseButtonVisible() {
+        return CommonMethods.isElementVisible(closeFormButton);
+    }
+ 
+    @FindBy(css = "iframe")  // Adjust if iframe uses name/id
+    private WebElement iframe;
+
+    @FindBy(xpath = "//h3[contains(text(),'Add New Medication')]")
+    private WebElement heading;
+
+    @FindBy(xpath = "//button[contains(text(),'Cancel')]")
+    private WebElement cancelBtn;
+
+    @FindBy(css = "label")
+    private List<WebElement> fieldLabels;
+
+    @FindBy(css = "select option")
+    private List<WebElement> dropdownOptions;
+    public boolean isIframeVisible() {
+        return iframe.isDisplayed();
+    }
+
+    public boolean isCancelButtonVisible() {
+        return cancelBtn.isDisplayed();
+    }
+
+    public String getPopupHeading() {
+        return heading.getText().trim();
+    }
+
+    public List<String> getAllFieldLabels() {
+        return fieldLabels.stream().map(el -> el.getText().trim()).collect(Collectors.toList());
+    }
+
+    public boolean isMedicationDropdownVisible() {
+        return medicationDropdown.isDisplayed();
+    }
+
+    public List<String> getMedicationDropdownOptions() {
+        return dropdownOptions.stream().map(WebElement::getText).map(String::trim).collect(Collectors.toList());
+    }
+ // Dosage input field
+    @FindBy(xpath = "//label[text()='Dosage']/following-sibling::input")
+    private WebElement dosageInput;
+
+
+    // Notes textarea
+    @FindBy(xpath = "//label[contains(text(),'Notes')]/following-sibling::textarea")
+    private WebElement notesTextareaMed;
+
+    public boolean isDosageInputVisible() {
+        return CommonMethods.isElementVisible(dosageInput);
+    }
+
+    public String getDosagePlaceholder() {
+        CommonMethods.waitForElementVisibilityOf(dosageInput);
+        return dosageInput.getAttribute("placeholder");
+    }
+
+    public boolean isFrequencyDropdownVisible() {
+        return CommonMethods.isElementVisible(frequencyDropdown);
+    }
+
+    public List<String> getFrequencyOptionsText() {
+        CommonMethods.waitForElementVisibilityOfAll(frequencyOptions);
+        return frequencyOptions.stream().map(WebElement::getText).map(String::trim).collect(Collectors.toList());
+    }
+
+    public boolean isTakeWithFoodCheckboxVisible() {
+        return CommonMethods.isElementVisible(takeWithFoodCheckbox);
+    }
+
+    public boolean isNotesTextareaVisible() {
+        return CommonMethods.isElementVisible(notesTextarea);
+        
+    }
+
+        // LOCATORS using XPath
+        @FindBy(xpath = "//select[@class='...']//option")
+        List<WebElement> medicationOptions;
+
+
+        @FindBy(xpath = "//select[contains(@class,'frequency')]")
+        WebElement frequencyDropdown;
+
+        @FindBy(xpath = "//select[contains(@class,'frequency')]//option")
+        List<WebElement> frequencyOptions;
+
+        @FindBy(xpath = "//input[@type='checkbox']")
+        WebElement takeWithFoodCheckbox;
+
+        @FindBy(xpath = "//textarea[@placeholder='Additional instructions or notes']")
+        WebElement notesTextareaatMad;
+//
+//        @FindBy(xpath = "//button[contains(text(),'Add Medication')]")
+//        WebElement addMedicationButton;
+
+        @FindBy(xpath = "//button[contains(text(),'Adding')]")
+        WebElement addingMedicationButton;
+
+        @FindBy(xpath = "//button[contains(@class,'text-red-500')]")
+        WebElement removeMedicationIcon;
+
+        @FindBy(xpath = "//select[@class='...']")
+        WebElement medicationDropdown;
+
+        @FindBy(xpath = "//p[contains(text(),'Scheduled at')]")
+        List<WebElement> scheduleTexts;
+
+        @FindBy(xpath = "//div[contains(text(),'Error in adding medication')]")
+        WebElement errorAlert;
+
+        // METHODS
+        public void selectMedication(String visibleText) {
+            CommonMethods.selectFromDropdown(medicationDropdown, visibleText);
+        }
+
+        public void enterDosage(String dosage) {
+            dosageInput.clear();
+            dosageInput.sendKeys(dosage);
+        }
+
+        public void selectFrequency(String visibleText) {
+            CommonMethods.selectFromDropdown(frequencyDropdown, visibleText);
+        }
+
+        public void checkTakeWithFood() {
+            if (!takeWithFoodCheckbox.isSelected()) takeWithFoodCheckbox.click();
+        }
+
+        public void enterNotes(String notes) {
+            notesTextarea.sendKeys(notes);
+        }
+
+        public void clickAddMedication() {
+            addMedicationButton.click();
+        }
+
+        public boolean isAddingButtonDisplayed() {
+            return addingMedicationButton.isDisplayed();
+        }
+
+        public List<String> getScheduledTimes() {
+            return scheduleTexts.stream().map(WebElement::getText).collect(Collectors.toList());
+        }
+
+        public boolean isRemoveIconVisible() {
+            return removeMedicationIcon.isDisplayed();
+        }
+
+        public void clickRemoveIcon() {
+            removeMedicationIcon.click();
+        }
+
+        public String getSelectedMedication() {
+            return CommonMethods.getSelectedOptionText(medicationDropdown);
+        }
+
+        public boolean isErrorAlertVisible() {
+            return errorAlert.isDisplayed();
+        }
+    
+
+
+    public boolean isAddMedicationButtonVisible() {
+        return CommonMethods.isElementVisible(addMedicationButton);
+    }
+    @FindBy(xpath = "//button[contains(@class,'date-picker-button')]")
+    private WebElement dateField;
+
+    @FindBy(xpath = "//div[contains(@class,'calendar-popup') and contains(@style,'display: block')]")
+    private WebElement calendarPopup;
+
+    @FindBy(xpath = "//td[contains(@class,'today') or contains(@class,'current-day')]")
+    private WebElement todayDateHighlight;
+
+    @FindBy(xpath = "//button[contains(@aria-label,'Previous month')]")
+    private WebElement previousMonthBtn;
+
+    @FindBy(xpath = "//button[contains(@aria-label,'Next month')]")
+    private WebElement nextMonthBtn;
+
+
+    @FindBy(xpath = "//button[contains(text(),'Add Medication')]")
+    private WebElement addMedicationBtn;
+
+    @FindBy(xpath = "//button[contains(@aria-label,'Remove medication') or contains(text(),'Remove')]")
+    private WebElement removeMedicationBtn;
+
+    @FindBy(xpath = "//div[contains(@class,'notification')]")
+    private WebElement notificationMessage;
+
+    @FindBy(xpath = "//button[contains(text(),'Mark as Taken')]")
+    private WebElement markAsTakenBtn;
+
+
+    // Actions
+
+    public void clickDateField() {
+        CommonMethods.waitForElementTobeClick(dateField);
+        dateField.click();
+    }
+
+    public boolean isCalendarPopupVisible() {
+        return CommonMethods.isElementVisible(calendarPopup);
+    }
+
+    public boolean isTodayDateHighlighted() {
+        return CommonMethods.isElementVisible(todayDateHighlight);
+    }
+
+    public boolean arePrevNextButtonsVisible() {
+        return CommonMethods.isElementVisible(previousMonthBtn) && CommonMethods.isElementVisible(nextMonthBtn);
+    }
+
+    public void clickPreviousMonth() {
+        CommonMethods.waitForElementTobeClick(previousMonthBtn);
+        previousMonthBtn.click();
+    }
+
+    public String getSelectedDate() {
+        CommonMethods.waitForElementVisibilityOf(dateField);
+        return dateField.getText().trim();
+    }
+
+    public void clickRemoveMedication() {
+        CommonMethods.waitForElementTobeClick(removeMedicationBtn);
+        removeMedicationBtn.click();
+    }
+
+    public String getNotificationText() {
+        CommonMethods.waitForElementVisibilityOf(notificationMessage);
+        return notificationMessage.getText().trim();
+    }
+
+    public void clickMarkAsTaken() {
+        CommonMethods.waitForElementTobeClick(markAsTakenBtn);
+        markAsTakenBtn.click();
+    }
+
+    @FindBy(xpath = "//button[contains(text(),'Mark as Taken')]")
+    private WebElement markAsTakenButton;
+
+
+    @FindBy(xpath = "//button[contains(text(),'Taken') or contains(@disabled,'disabled')]")
+    private WebElement takenIndicator;
+
+    public boolean isMedicationMarkedAsTaken() {
+        try {
+        
+            CommonMethods.waitForElementVisibilityOf(takenIndicator);
+            return takenIndicator.isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    @FindBy(xpath = "//li[contains(@class,'destructive') and .//div[text()='Error adding medication']]")
+    private WebElement errorToast;
+    public boolean isErrorToastDisplayed(String expectedMessage) {
+        try {
+            CommonMethods.waitForElementVisibilityOf(errorToast);
+            String alertText = errorToast.getText();
+            return alertText.contains(expectedMessage);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 
 }

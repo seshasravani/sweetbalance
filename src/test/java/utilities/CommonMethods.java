@@ -6,6 +6,7 @@ import java.util.List;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import webdriver.DriverFactory;
@@ -21,7 +22,9 @@ public class CommonMethods {
 			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DEFAULT_TIMEOUT));
 			wait.until(ExpectedConditions.visibilityOf(locator));
 		} catch (Exception e) {
+			
 			LoggerLoad.info("No element found within timeout: " + DEFAULT_TIMEOUT + " seconds");
+			
 		}
 	}
 	
@@ -65,5 +68,39 @@ public class CommonMethods {
 	        return false;
 	    }
 	}
+	public static void selectFromDropdown(WebElement dropdownElement, String visibleText) {
+	    try {
+	        waitForElementVisibilityOf(dropdownElement);
+	        Select select = new Select(dropdownElement);
+	        select.selectByVisibleText(visibleText);
+	        LoggerLoad.info("Selected option: " + visibleText);
+	    } catch (Exception e) {
+	        LoggerLoad.info("Failed to select option: " + visibleText);
+	    }
+	}
+
+	public static String getSelectedDropdownOption(WebElement dropdownElement) {
+	    try {
+	        waitForElementVisibilityOf(dropdownElement);
+	        Select select = new Select(dropdownElement);
+	        return select.getFirstSelectedOption().getText().trim();
+	    } catch (Exception e) {
+	        LoggerLoad.info("Could not retrieve selected dropdown option.");
+	        return null;
+	    }
+	}
+	public static String getSelectedOptionText(WebElement dropdownElement) {
+	    try {
+	        waitForElementVisibilityOf(dropdownElement);
+	        Select select = new Select(dropdownElement);
+	        return select.getFirstSelectedOption().getText().trim();
+	    } catch (Exception e) {
+	        LoggerLoad.info("Unable to get selected option from dropdown.");
+	        return null;
+	    }
+	}
+
+	
+
 
 }
