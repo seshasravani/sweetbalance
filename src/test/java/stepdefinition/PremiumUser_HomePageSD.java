@@ -1,11 +1,15 @@
 package stepdefinition;
 
 
+import java.io.File;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import pagefactory.PremiumUser;
 import io.cucumber.java.Before;
@@ -23,7 +27,6 @@ public class PremiumUser_HomePageSD {
     public void init() {
     	
         driver = DriverFactory.getDriver();
-        // Defensive null-check
         if (driver == null) {
             throw new RuntimeException("WebDriver is not initialized. Check your Hooks or DriverFactory.");
         }
@@ -220,7 +223,6 @@ public class PremiumUser_HomePageSD {
 	public void the_user_should_see_as_sub_title(String expectedSubtitle) {
 		Assert.assertTrue(premiumUser.isMainMealSubtitleVisible(), expectedSubtitle + " subtitle is not visible");
 	    Assert.assertEquals(premiumUser.getMainMealSubtitleText(), expectedSubtitle, "Subtitle text mismatch");
-	
 	}
 
 	@Then("the user should see utensil icon for each main-meal")
@@ -231,13 +233,8 @@ public class PremiumUser_HomePageSD {
 	@Then("the user should see {string} based time in main-meal")
 	public void the_user_should_see_based_time_in_main_meal(String timeFormatKeyword) {
 	    Assert.assertTrue(premiumUser.isMainMealTimeVisible(), "Main meal time is not visible");
-
 	    String actualTime = premiumUser.getMainMealTimeText();
-
-	    // Log actual time for debugging
 	    System.out.println("Displayed time: " + actualTime);
-
-	    // Validate format: hh:mm AM/PM (allowing 1 or 2 digit hour)
 	    boolean isValid = actualTime.matches("\\d{1,2}:\\d{2} (AM|PM)");
 
 	    Assert.assertTrue(isValid, "Time format is not valid. Found: " + actualTime);
@@ -383,7 +380,7 @@ public class PremiumUser_HomePageSD {
 	            actual, expectedTitle,
 	            "Page title did not match"
 	        );
-//	    Assert.assertTrue(premiumUser.isNutritionCardVisible(), "Nutrition Insight summary card is not visible");
+
 	}
 
 	@Then("the user should see subtitle {string}")
@@ -507,8 +504,6 @@ public class PremiumUser_HomePageSD {
 	public void the_user_should_be_redirected_to_full_meal_plan_page() {
 		premiumUser.validatePageTitle();
 	}
-//homepage.clickStackGetStartedButton();
-//	Assert.assertEquals(homepage.getHomePageTitle(), "Stack");
 	@Given("the user is on Full Meal Plan page")
 	public void the_user_is_on_full_meal_plan_page() {
 		premiumUser.clickViewFullMealPlanBtn();
@@ -550,7 +545,666 @@ public class PremiumUser_HomePageSD {
 		            "Missing meal section button: " + expected
 		        );
 		    }
-	}}
-//
-//
-//}
+	}
+	@Given("User logged onto the application")
+	public void user_logged_onto_the_application() throws Exception {
+		String filepath = "src/test/resources/testdata/SweetBalanceApplication.xlsx";
+		String sheetName = "Sheet1"; // Update this to your actual Excel sheet name
+
+		premiumUser.clickLoginBtn();
+		premiumUser.enterEmailFromExcel(filepath, sheetName, 0);
+		premiumUser.clickContinueWithEmailBtn();
+		premiumUser.enterPasswordFromExcel(filepath, sheetName, 0);
+		premiumUser.clickSignInButton();
+		premiumUser.validatePageTitle();
+	}
+
+//	@Given("User is in home page")
+//	public void user_is_in_home_page() {
+//		premiumUser.isChallengeButtonAnimated();
+//	}
+
+	@When("User clicks Weekly plan")
+	public void user_clicks_weekly_plan() {
+		premiumUser.clickweeklyPlanBtn();
+	}
+
+	@Then("User should get pdf download of weekly plan")
+	public void user_should_get_pdf_download_of_weekly_plan() {
+		 String downloadPath = System.getProperty("user.home") + "/Downloads";
+		    File downloadDir = new File(downloadPath);
+
+		    // Updated prefix based on actual filename
+		    String expectedPrefix = "weekly-meal-plan";
+
+		    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+		    boolean fileDownloaded = wait.until(d -> {
+		        File[] files = downloadDir.listFiles((dir, name) ->
+		            name.startsWith(expectedPrefix) && name.endsWith(".pdf")
+		        );
+		        return files != null && files.length > 0;
+		    });
+		    Assert.assertTrue(fileDownloaded, "Expected weekly meal plan PDF not found in Downloads folder.");
+		}
+
+	@When("User clicks on Blood glucose button")
+	public void user_clicks_on_blood_glucose_button() {
+		premiumUser.clickBloodGlucoseBtn();
+	}
+
+	@Then("User should redirect to Blood Glucose popup window")
+	public void user_should_redirect_to_blood_glucose_popup_window() {
+		Assert.assertTrue(premiumUser.isTrackGlucoseTitleVisible(), "Popup window is NOT visible.");
+	}
+
+	@When("User clicks on physical activity button")
+	public void user_clicks_on_physical_activity_button() {
+		premiumUser.clickPhysicalActivityBtn();
+	}
+
+	@Then("User should redirect to physical activity popup window")
+	public void user_should_redirect_to_physical_activity_popup_window() {
+
+		Assert.assertTrue(premiumUser.isphysicalActivityTitleVisible(), "Popup window is NOT visible.");
+	}
+
+	@When("User clicks on food intake button")
+	public void user_clicks_on_food_intake_button() {
+		premiumUser.clickFoodIntakeBtn();
+	}
+
+	@Then("User should redirect to food intake popup window")
+	public void user_should_redirect_to_food_intake_popup_window() {
+		Assert.assertTrue(premiumUser.isFoodIntakeTrackerTitleVisible(), "Popup window is NOT visible.");
+	}
+
+	@When("User clicks on medication button")
+	public void user_clicks_on_medication_button() {
+		premiumUser.clickMedicationBtn();
+	}
+
+	@Then("User should redirect to medication popup window")
+	public void user_should_redirect_to_medication_popup_window() {
+	
+		Assert.assertTrue(premiumUser.isMedicationTrackerTitleVisible(), "Popup window is NOT visible.");
+	}
+
+	@When("User clicks log button")
+	public void user_clicks_log_button() {
+		premiumUser.clickLogBtn();
+	}
+
+	@Then("User should redirected to dashboard page")
+	public void user_should_redirected_to_dashboard_page() {
+		Assert.assertTrue(premiumUser.isOnDashboard(), "User was not redirected to dashboard page.");
+	}
+	@Given("User is in dashboard page")
+	public void user_is_in_dashboard_page() throws Exception {
+		String filepath = "src/test/resources/testdata/SweetBalanceApplication.xlsx";
+		String sheetName = "Sheet1"; // Update this to your actual Excel sheet name
+
+		premiumUser.clickLoginBtn();
+		premiumUser.enterEmailFromExcel(filepath, sheetName, 0);
+		premiumUser.clickContinueWithEmailBtn();
+		premiumUser.enterPasswordFromExcel(filepath, sheetName, 0);
+		premiumUser.clickSignInButton();
+		premiumUser.clickLogBtn();
+	}
+
+	@When("User clicks home tab after logging emotional state in dashboard")
+	public void user_clicks_home_tab_after_logging_emotional_state_in_dashboard() {
+		premiumUser.clickemojiLogBtn();
+		premiumUser.clicklogEmotionalStateBtn();
+		premiumUser.clickHome();
+	}
+
+	@Then("User should see emoji and mood text is changed")
+	public void user_should_see_emoji_and_mood_text_is_changed() {
+		
+
+	}
+
+
+@Given("User clicks view meal plan after reaching home page")
+public void user_clicks_view_meal_plan_after_reaching_home_page() throws Exception {
+	String filepath = "src/test/resources/testdata/SweetBalanceApplication.xlsx";
+	String sheetName = "Sheet1"; // Update this to your actual Excel sheet name
+
+	premiumUser.clickLoginBtn();
+	premiumUser.enterEmailFromExcel(filepath, sheetName, 0);
+	premiumUser.clickContinueWithEmailBtn();
+	premiumUser.enterPasswordFromExcel(filepath, sheetName, 0);
+	premiumUser.clickSignInButton();
+  premiumUser.clickViewFullMealPlanBtn();
+  
+}
+
+@Given("User is in View Meal plan")
+public void user_is_in_view_meal_plan() {
+	premiumUser.getPageTitleText();
+}
+
+@When("User clicks Meal sections")
+public void user_clicks_meal_sections() {
+	premiumUser.clicklunchTabFMP();
+}
+
+@Then("Each meal section should display a pre-meal item with the format {string}")
+public void each_meal_section_should_display_a_pre_meal_item_with_the_format(String expectedPrefix) {
+	String actualText = premiumUser.getPreMealItemText();
+    System.out.println("Pre-meal text: " + actualText);
+    Assert.assertTrue(actualText.startsWith(expectedPrefix + ": "), 
+        "Expected text to start with 'Pre-meal: ', but got: " + actualText);
+}
+
+
+@Then("Item description should be displayed below the item name")
+public void item_description_should_be_displayed_below_the_item_name() {
+	 Assert.assertTrue(premiumUser.isPreMealDescriptionDisplayed(), 
+		        "Pre-meal description is not visible under the item name");
+
+		    String description = premiumUser.getPreMealDescriptionText();
+		    System.out.println("Description: " + description);
+		    Assert.assertFalse(description.isEmpty(), "Description text is empty");
+	
+}
+
+@Then("Calories value should be displayed")
+public void calories_value_should_be_displayed() {
+	premiumUser.isCaloriesValueDisplayed();
+	Assert.assertTrue(premiumUser.isCaloriesValueDisplayed(), "calories:value");
+}
+
+@Then("Preparation instructions displayed if available, if not then {string}")
+public void preparation_instructions_displayed_if_available_if_not_then(String expected) {
+	String actualText = premiumUser.getPreparationInstructions();
+    System.out.println("Preparation text: " + actualText);
+    
+    // Assertion: should be "N/A" or real instructions
+    Assert.assertTrue(!actualText.isEmpty(), "Preparation instruction text is empty.");
+    Assert.assertEquals(actualText, expected, "Preparation text does not match expected.");
+}
+
+
+@Then("User should see {string} heading in full plan")
+public void user_should_see_heading_in_full_plan(String expectedHeading) {
+	 boolean isVisible = premiumUser.isPreMealNutrientsHeadingVisible();
+	    Assert.assertTrue(isVisible, "Expected heading not found: " + expectedHeading);
+	
+}
+
+@Then("User should see list {string}")
+public void user_should_see_list(String expectedNutrients) {
+	List<String> expected = Arrays.asList(expectedNutrients.toLowerCase().split(", "));
+    List<String> actual = premiumUser.getNutrientLabels(); // Like: ["Carbs: N/A", "Protein: N/A"]
+
+    System.out.println("Expected: " + expected);
+    System.out.println("Actual: " + actual);
+
+    for (String nutrient : expected) {
+        boolean match = actual.stream()
+            .anyMatch(a -> a.toLowerCase().startsWith(nutrient)); // e.g., "carbs" matches "carbs: n/a"
+      
+        Assert.assertTrue(match, "Expected nutrient not found: " + nutrient);
+    }
+}
+
+
+
+@Given("User is in view full plan page")
+public void user_is_in_view_full_plan_page() {
+	premiumUser.getPageTitleText();
+}
+
+@When("User clicks back to plan button")
+public void user_clicks_back_to_plan_button() {
+	premiumUser.clickBackToPlan();
+}
+
+@Then("User should redirected to Home page")
+public void user_should_redirected_to_home_page() {
+	premiumUser.getPageTitleText();
+}
+
+
+//ChallengeButton
+@Given("User is logged into app")
+public void user_is_logged_into_app() throws Exception {
+
+	String filepath = "src/test/resources/testdata/SweetBalanceApplication.xlsx";
+	String sheetName = "Sheet1"; // Update this to your actual Excel sheet name
+
+
+	premiumUser.clickLoginBtn();
+	premiumUser.enterEmailFromExcel(filepath, sheetName, 0);
+	premiumUser.clickContinueWithEmailBtn();
+	premiumUser.enterPasswordFromExcel(filepath, sheetName, 0);
+	premiumUser.clickSignInButton();
+}
+
+@When("User clicks Challenge button")
+public void user_clicks_challenge_button() {
+	premiumUser.clickChallengeButton();
+}
+
+@Then("User should get pop window")
+public void user_should_get_pop_window() {
+    Assert.assertTrue(premiumUser.isPopupVisible(), "Challenge popup is not visible");
+}
+
+@Then("User should see title {string} on Popup")
+public void user_should_see_title_on_popup(String expectedTitle) {
+    Assert.assertEquals(premiumUser.getPopupTitle(), expectedTitle);
+}
+
+@Then("User should see sub text on challenge popup {string}")
+public void user_should_see_subtext_on_challenge_popup(String expectedText) {
+    Assert.assertEquals(premiumUser.getPopupSubtext(), expectedText);
+}
+
+@Then("User should see two options for challenge option")
+public void user_should_see_two_options_for_challenge_option() {
+    Assert.assertTrue(premiumUser.firstChallengeBtn.isDisplayed());
+    Assert.assertTrue(premiumUser.secondChallengeBtn.isDisplayed());
+}
+
+@Then("User should see {string} as first option")
+public void user_should_see_as_first_option(String expectedOption) {
+    Assert.assertEquals(premiumUser.getFirstChallengeText(), expectedOption);
+}
+
+@Then("User should see {string} as second option")
+public void user_should_see_as_second_option(String expectedOption) {
+    Assert.assertEquals(premiumUser.getSecondChallengeText(), expectedOption);
+}
+//@BloodGlucose
+@Given("User is in home page after logged into app")
+public void user_is_in_home_page_after_logged_into_app() throws Exception {
+	String filepath = "src/test/resources/testdata/SweetBalanceApplication.xlsx";
+	String sheetName = "Sheet1"; // Update this to your actual Excel sheet name
+
+
+	premiumUser.clickLoginBtn();
+	premiumUser.enterEmailFromExcel(filepath, sheetName, 0);
+	premiumUser.clickContinueWithEmailBtn();
+	premiumUser.enterPasswordFromExcel(filepath, sheetName, 0);
+	premiumUser.clickSignInButton();
+}
+
+@When("User clicks Blood Glucose")
+public void user_clicks_blood_glucose() {
+	premiumUser.clickBloodGlucoseBtn();
+}
+
+@Then("User should see title {string} on Track Glucose popup")
+public void user_should_see_title_on_track_glucose_popup(String expectedTitle) {
+	 String actualTitle = premiumUser.getTrackGlucosePopupTitle();
+	    Assert.assertEquals(actualTitle.trim(), expectedTitle, "Track Glucose title mismatch.");
+	
+}
+
+@Then("User should see subtext {string}")
+public void user_should_see_subtext(String expectedTitle) {
+	premiumUser.clickBloodGlucoseBtn();
+
+	 String actualTitle = premiumUser.getSubtitleTrackGlucosePopupTitle();
+	    Assert.assertEquals(actualTitle.trim(), expectedTitle, "Track Glucose title mismatch.");
+}
+
+@Then("User should see field for Blood Glucose Level, Reading Type, Date")
+public void user_should_see_field_for_blood_glucose_level_reading_type_date() {
+	premiumUser.clickBloodGlucoseBtn();
+	 Assert.assertTrue(premiumUser.isGlucoseFieldDisplayed(), "Blood Glucose Level field is not displayed");
+     Assert.assertTrue(premiumUser.isReadingTypeLabelDisplayed(), "Reading Type label is not displayed");
+     Assert.assertTrue(premiumUser.areAllReadingTypesDisplayed(), "Not all Reading Type options are displayed");
+     Assert.assertTrue(premiumUser.isDateLabelDisplayed(), "Date label is not displayed");
+//     Assert.assertTrue(premiumUser.isDateInputDisplayed(), "Date input field is not displayed");
+}
+
+@Then("User should see text field for blood glucose")
+public void user_should_see_text_field_for_blood_glucose() {
+	premiumUser.clickBloodGlucoseBtn();
+	Assert.assertTrue(premiumUser.isDateInputDisplayed(), "Date input field is not displayed");
+}
+
+@Then("User should see text {string} in blood glucose field")
+public void user_should_see_text_in_blood_glucose_field(String expectedText) {
+	premiumUser.clickBloodGlucoseBtn();
+    String actualText = premiumUser.getGlucoseFieldPlaceholder();
+    Assert.assertEquals(actualText, expectedText, "Placeholder text does not match.");
+}
+@Then("User should see \"mg\\/dL\"in blood glucose input field")
+public void user_should_see_mg_d_l_in_blood_glucose_input_field() {
+	premiumUser.clickBloodGlucoseBtn();
+ 
+     Assert.assertTrue(premiumUser.isDateLabelDisplayed(), "mg/dl field is not displayed");
+}
+@Then("User should see three transition details with text {string}")
+public void user_should_see_three_transition_details_with_text(String expectedText) {
+	// Open blood glucose section
+    premiumUser.clickBloodGlucoseBtn();
+
+    // Check visibility
+    Assert.assertTrue(premiumUser.areAllTransitionLabelsPresent(), "Transition labels are not fully visible");
+
+    // Fetch actual text from UI
+    List<String> actualTexts = Arrays.asList(
+        premiumUser.lowTransition.getText().trim().toLowerCase(),
+        premiumUser.normalTransition.getText().trim().toLowerCase(),
+        premiumUser.highTransition.getText().trim().toLowerCase()
+    );
+
+    // Convert expected input to list
+    List<String> expected = Arrays.stream(expectedText.split(","))
+                                  .map(String::trim)
+                                  .map(String::toLowerCase)
+                                  .collect(Collectors.toList());
+    // Assertion
+    Assert.assertEquals(actualTexts, expected, 
+        "Transition labels mismatch.\nExpected: " + expected + "\nActual: " + actualTexts);
+}
+@Then("User should see Red color in low")
+public void user_should_see_red_color_in_low() {
+	premiumUser.clickBloodGlucoseBtn();
+    String actualColor = premiumUser.getLowTransitionColor();
+    Assert.assertTrue(actualColor.contains("rgba(254, 226, 226"), 
+    	    "Expected red color, but found: " + actualColor);
+
+}
+
+@Then("User should see green color in normal")
+public void user_should_see_green_color_in_normal() {
+	premiumUser.clickBloodGlucoseBtn();
+    String actualColor = premiumUser.getNormalTransitionColor();
+    Assert.assertTrue(actualColor.contains("rgba(187, 247, 208") || actualColor.contains("green"),
+        "Expected green color, but found: " + actualColor);
+}
+
+@Then("User should see yellow color in high")
+public void user_should_see_yellow_color_in_high() {
+	premiumUser.clickBloodGlucoseBtn();
+    String actualColor = premiumUser.getHighTransitionColor();
+    Assert.assertTrue(actualColor.contains("rgba(254, 243, 199"), 
+    	    "Expected yellow color, but found: " + actualColor);
+
+}
+
+
+@Then("User should see date picker")
+public void user_should_see_date_picker() {
+	premiumUser.clickBloodGlucoseBtn();
+	Assert.assertTrue(premiumUser.isDatePickerVisible(), "Date Picker is not  is not visible");
+}
+
+@Then("User should see last reading details")
+public void user_should_see_last_reading_details() {
+	premiumUser.clickBloodGlucoseBtn();
+	Assert.assertTrue(premiumUser.islastreadigofglucoseVisible(), "last reading is not visible");
+}
+
+@Then("User should see record reading button")
+public void user_should_see_record_reading_button() {
+	premiumUser.clickBloodGlucoseBtn();
+    Assert.assertTrue(premiumUser.isRecordReadingButtonVisible(), "Record Reading button is not visible");
+}
+//PhysicalActivity
+
+
+@When("User clicks physical activiy")
+public void user_clicks_physical_activiy() {
+	premiumUser.clickPhysicalActivityBtn();
+}
+@Then("User should see title {string} on the popup")
+public void user_should_see_title_on_the_popup(String expectedTitle) {
+	premiumUser.isphysicalActivityTitleVisible();
+	Assert.assertEquals(premiumUser.getPhysicalActivityTitleText(), expectedTitle);
+}
+
+@Then("User should see subtext {string} activity popup")
+public void user_should_see_subtext_activity_popup(String expectedSubtext) {
+	 premiumUser.clickPhysicalActivityBtn();
+	 Assert.assertEquals(premiumUser.getSubtitlePhysicalActivityTitle(), expectedSubtext);
+}
+
+@Then("User should see field for Activity Type, Duration, Date, Intensity")
+public void user_should_see_field_for_activity_type_duration_date_intensity() {
+	premiumUser.clickPhysicalActivityBtn();
+	  Assert.assertTrue(premiumUser.isActivityTypeDropdownVisible());
+	    Assert.assertTrue(premiumUser.isDurationInputVisible());
+	    Assert.assertTrue(premiumUser.isDatePickerVisible1());
+	    Assert.assertTrue(premiumUser.isIntensityLabelVisible());
+}
+
+@Then("User should see dropdown for activity type")
+public void user_should_see_dropdown_for_activity_type() {
+	premiumUser.clickPhysicalActivityBtn();
+	Assert.assertTrue(premiumUser.isActivityTypeDropdownVisible());
+
+}
+
+@Then("User should see {string} activity type")
+public void user_should_see_activity_type(String expectedOptions) {
+	premiumUser.clickPhysicalActivityBtn();
+	   List<String> actualOptions = premiumUser.getActivityTypeDropdownOptions();
+	    for (String expected : expectedOptions.split(", ")) {
+	        Assert.assertTrue(actualOptions.contains(expected), "Missing: " + expected);
+	    }
+}
+
+@Then("User should see input field for duration")
+public void user_should_see_input_field_for_duration() {
+	premiumUser.clickPhysicalActivityBtn();
+	 Assert.assertTrue(premiumUser.isDurationInputVisible());
+}
+@Then("User should see {string} in placeholder field")
+public void user_should_see_in_placeholder_field(String expectedPlaceholder) {
+	premiumUser.clickPhysicalActivityBtn();
+	 Assert.assertEquals(premiumUser.getDurationPlaceholder(), expectedPlaceholder);;
+}
+
+@Then("User should see drop down duration")
+public void user_should_see_drop_down_duration() {
+	premiumUser.clickPhysicalActivityBtn();
+	 Assert.assertTrue(premiumUser.isDurationUnitDropdownVisible());
+}
+
+@Then("User should see {string} activity popup")
+public void user_should_see_activity_popup(String expectedUnits) {
+	premiumUser.clickPhysicalActivityBtn();
+	  List<String> actualUnits = premiumUser.getDurationUnitOptionsText();
+	    for (String expected : expectedUnits.split(", ")) {
+	        Assert.assertTrue(actualUnits.contains(expected), "Missing unit: " + expected);
+	    }
+}
+@Then("User should see date picker on physical Activity popup")
+public void user_should_see_date_picker_on_physical_Activity_popup() {
+	premiumUser.clickPhysicalActivityBtn();
+    Assert.assertTrue(premiumUser.isDatePickerVisible1());
+}
+@Then("User should see intensity field")
+public void user_should_see_intensity_field() {
+	premiumUser.clickPhysicalActivityBtn();
+	  Assert.assertTrue(premiumUser.isIntensityLabelVisible());
+}
+@Then("User should see {string} on activity popup")
+public void user_should_see_on_activity_popup(String expectedLevels) {
+	premiumUser.clickPhysicalActivityBtn();
+	  List<String> actualLevels = premiumUser.getIntensityOptionsText();
+	    for (String expected : expectedLevels.split(", ")) {
+	        Assert.assertTrue(actualLevels.contains(expected), "Missing intensity: " + expected);
+	    }
+}
+
+@Then("User should see save activity button")
+public void user_should_see_save_activity_button() {
+	premiumUser.clickPhysicalActivityBtn();
+	  Assert.assertTrue(premiumUser.isSaveButtonVisible());
+
+}
+//FooIntake 
+
+    @When("User clicks Food Intake")
+    public void user_clicks_food_intake() {
+    	premiumUser.clickFoodIntakeBtn();
+    }
+
+    @Then("User should see title {string} on food popup")
+    public void user_should_see_title_on_food_popup(String expectedTitle) {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertEquals(premiumUser.getTitleText(),expectedTitle);
+    }
+
+    @Then("User should see subtext {string} in the food popup")
+    public void user_should_see_subtext_in_the_food_popup(String expectedSubtext) {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertEquals(premiumUser.getSubtext(), expectedSubtext);
+    }
+    @Then("User should see {string} in foodIntake popup")
+    public void user_should_see_in_food_intake_popup(String expectedTabs) {
+    	premiumUser.clickFoodIntakeBtn();
+        List<String> expected = List.of(expectedTabs.split(",\\s*"));
+        Assert.assertEquals(premiumUser.getMealTabNames(), expected);
+    }
+
+    @Then("User should see field for Food Name, Serving Size, Calories, Date, Notes")
+    public void user_should_see_field_for_food_name_serving_size_calories_date_notes() {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertTrue(premiumUser.isFoodNameFieldVisible());
+        Assert.assertTrue(premiumUser.isServingSizeDropdownVisible());
+        Assert.assertTrue(premiumUser.isCaloriesInputVisible());
+        Assert.assertTrue(premiumUser.isDatePickerVisible());
+        Assert.assertTrue(premiumUser.isNotesInputVisible());
+    }
+
+    @Then("User should see {string} tab selected by default")
+    public void user_should_see_tab_selected_by_default(String expectedTab) {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertEquals(premiumUser.getSelectedMealTab(), expectedTab);
+    }
+
+    @Then("User should see input field for food name")
+    public void user_should_see_input_field_for_food_name() {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertTrue(premiumUser.isFoodNameFieldVisible());
+    }
+
+    @Then("User should see text {string} as placeholder")
+    public void user_should_see_text_as_placeholder(String expectedPlaceholder) {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertEquals(premiumUser.getFoodNamePlaceholder(), expectedPlaceholder);
+    }
+    @Then("User should see {string} after popoup")
+    public void user_should_see_after_popoup(String string) {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertTrue(premiumUser.isServingSizeDropdownVisible());
+    }
+
+    @Then("User should see {string} as default")
+    public void user_should_see_as_default(String expectedDefault) {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertEquals(premiumUser.getSelectedServingSize(), expectedDefault);
+    }
+
+    @Then("User should see {string} options in Serving Size")
+    public void user_should_see_options_in_serving_size(String expectedOptions) {
+    	premiumUser.clickFoodIntakeBtn();
+        List<String> expected = List.of(expectedOptions.split(",\\s*"));
+        Assert.assertEquals(premiumUser.getServingSizeOptions(), expected);
+    }
+
+    @Then("User should see calculator icon in calorie")
+    public void user_should_see_calculator_icon_in_calorie() {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertTrue(premiumUser.isCalculatorIconVisible());
+    }
+
+    @Then("User should see input field for calorie")
+    public void user_should_see_input_field_for_calorie() {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertTrue(premiumUser.isCaloriesInputVisible());
+    }
+
+    @Then("User should see text {string} in calorie field as placeholder")
+    public void user_should_see_text_in_calorie_field_as_placeholder(String expected) {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertEquals(premiumUser.getCaloriesPlaceholder(), expected);
+    }
+
+    @Then("User should see {string} under calorie field")
+    public void user_should_see_under_calorie_field(String expectedHelperText) {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertEquals(premiumUser.getCaloriesHelperText(), expectedHelperText);
+    }
+
+    @Then("User should see date picker after popup")
+    public void user_should_see_date_picker_after_popup() {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertTrue(premiumUser.isDatePickerVisible());
+    }
+
+    @Then("User should see input block for notes")
+    public void user_should_see_input_block_for_notes() {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertTrue(premiumUser.isNotesInputVisible());
+    }
+
+    @Then("User should see {string} in notes as placeholder")
+    public void user_should_see_in_notes_as_placeholder(String expected) {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertEquals(premiumUser.getNotesPlaceholder(), expected);
+    }
+
+    @Then("User should see \"Add any additional information...\"after the foodintake popup")
+    public void user_should_see_add_any_additional_information_after_the_foodintake_popup() {
+    	premiumUser.clickFoodIntakeBtn();
+    	String expectedPlaceholder = "Add any additional information...";
+        String actualPlaceholder = premiumUser.getNotesPlaceholder();
+        Assert.assertEquals(actualPlaceholder, expectedPlaceholder, "Placeholder text mismatch after Food Intake popup");
+    }
+    @Then("User should see save food entry button")
+    public void user_should_see_save_food_entry_button() {
+    	premiumUser.clickFoodIntakeBtn();
+        Assert.assertTrue(premiumUser.isSaveButtonVisible());
+    }
+    @Then("User should see {string} tabs")
+    public void user_should_see_tabs(String expectedTabs) {
+    	 List<String> expectedList = Arrays.asList(expectedTabs.split(",\\s*")); // ["Breakfast", "Lunch", "Dinner", "Snack"]
+    	    List<String> actualList = premiumUser.getMealTabsText(); // From page object method
+
+    	    System.out.println("Expected Tabs: " + expectedList);
+    	    System.out.println("Actual Tabs: " + actualList);
+
+    	    Assert.assertEquals(actualList, expectedList, "Tab names mismatch or order incorrect");
+    
+    }
+
+    @Then("User should see dropdown for serving size")
+    public void user_should_see_dropdown_for_serving_size() {
+    	List<String> expectedOptions = Arrays.asList(
+    	        "Small (1/2 cup)", "Medium (1 cup)", "Large (2 cups)", "Custom..."
+    	    );
+    	    List<String> actualOptions = premiumUser.getServingSizeOptions();
+
+    	    System.out.println("Expected: " + expectedOptions);
+    	    System.out.println("Actual: " + actualOptions);
+
+    	    Assert.assertEquals(actualOptions, expectedOptions, "Dropdown options do not match expected values");
+    	
+    }
+
+    @Then("User should see toadys date")
+    public void user_should_see_toadys_date() {
+        String actualDate = premiumUser.getDisplayedCalendarDate();
+        String expectedDate = premiumUser.getFormattedTodaysDate();
+
+        System.out.println("Expected: " + expectedDate);
+        System.out.println("Actual: " + actualDate);
+
+        Assert.assertEquals(actualDate.trim(), expectedDate.trim(), "Displayed date does not match today's date");
+    
+    }
+
+
+
+
+}

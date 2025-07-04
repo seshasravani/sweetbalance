@@ -18,6 +18,10 @@ public class DriverFactory {
 		            WebDriverManager.chromedriver().setup();
 		            tlDriver.set(ThreadGuard.protect(new ChromeDriver()));
 		            break;
+		        case "firefox":
+	                WebDriverManager.firefoxdriver().setup();
+	                tlDriver.set(ThreadGuard.protect(new FirefoxDriver()));
+	                break;
 		        case "edge":
 		            WebDriverManager.edgedriver().setup();
 		            tlDriver.set(ThreadGuard.protect(new EdgeDriver()));

@@ -127,54 +127,6 @@ Feature: Functional and Non-Functional Test Validation for Premium Account User
   Scenario: Verify each meal calorie detail on the right side
     When the user clicks meal section
     Then the user should see calorie detail on the right side of its section
-#
-  #Scenario: Verify meal calorie detail matches pre-meal and main meal
-    #When the user clicks meal section
-    #Then calorie in flex card should match with the meal
-#
-  #Scenario: Verify that the donut chart is displayed
-    #When the user clicks meal section
-    #Then the user should see donut chart
-#
-  #Scenario: Validate that donut chart displays total calories
-    #When the user clicks meal section
-    #Then the user should see total calories in donut chart
-#
-  #Scenario: Verify color segments exist in donut chart
-    #When the user clicks meal section
-    #Then the user should see distinct color segment in each macro
-#
-  #Scenario: Validate macro percentage distribution in donut chart
-    #When the user clicks meal section
-    #Then macro percentages should match expected values
-#
-  #Scenario: Verify macro segment colors match bar chart
-    #When the user clicks meal section
-    #Then each segment color should match its corresponding label
-#
-  #Scenario: Verify bar chart is visible in meal section
-    #When the user clicks meal section
-    #Then the user should see macronutrient bar chart
-#
-  #Scenario: Validate each macro has a horizontal bar
-    #When the user clicks meal section
-    #Then the user should see progress bars for carbs, protein, fat, and fiber
-#
-  #Scenario: Verify bar chart values match macro values
-    #When the user clicks meal section
-    #Then each nutrient bar should show value consistent with label
-#
-  #Scenario: Validate bar chart percentages add up to 100%
-    #When the user clicks meal section
-    #Then all macro percentages should add up to 100%
-#
-  #Scenario: Verify presence of macro labels and percentages below the chart
-    #When the user views macro section
-    #Then each macronutrient should display name and percentage
-#
-  #Scenario: Validate legend color matches chart segment
-    #When the user views macro legend
-    #Then legend color should match its chart segment
 
   Scenario: Verify navigation to View Full Meal Plan
     When the user clicks View Meal Plan button

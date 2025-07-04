@@ -13,7 +13,7 @@ Feature: Homepage Challenge Button Functionality
 
   Scenario: Verify the subtext in the popup
     When User clicks Challenge button
-    Then User should see sub text "Select a program that best fits your health goals"
+    Then User should see sub text on challenge popup "Select a program that best fits your health goals"
 
   Scenario: Verify the presence of two option buttons
     When User clicks Challenge button

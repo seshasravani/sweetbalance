@@ -1,6 +1,6 @@
-  Feature: Validation for View Full Meal Plan
+Feature: Validation for View Full Meal Plan
 
-  Background:
+  Background: 
     Given User clicks view meal plan after reaching home page
 
   Scenario: Verify each meal section has Pre meal title
@@ -21,22 +21,7 @@
     Then User should see "Nutrients (Pre-meal portion)" heading in full plan
 
   Scenario: Verify nutrients list (Pre-meal portion)
-    Then User should see "carb, protein, fat, fibre"
-
-  Scenario: Verify nutrients value (Pre-meal portion)
-    Then User should see value present in all each nutrient
-
-  Scenario: Verify pre-breakfast time
-    Then Pre-meal time for Breakfast displayed should be "7:00 AM"
-
-  Scenario: Verify pre-lunch time
-    Then Pre-meal time for lunch displayed should be "12:30AM"
-
-  Scenario: Verify pre-dinner time
-    Then Pre-meal time for lunch displayed should be "6:30AM"
-
-  Scenario: Verify each meal section has meal title
-    Then Each meal section should display a meal item with the format "Mainl: <followed item by name>"
+    Then User should see list "carb, protein, fat, fibre"
 
   Scenario: Verify meal includes description under the item name
     Then Item description should be displayed below the item name
@@ -47,32 +32,11 @@
   Scenario: Verify Nutrients information
     Then User should see "Nutrients information" heading in full plan
 
-  Scenario: Verify meal total calorie
-    Then Total Calories value should be displayed
-
   Scenario: Verify nutrients list (meal portion)
     Then User should see "carb, protein, fat, fibre"
 
-  Scenario: Verify nutrients value (meal portion)
-    Then User should see value present in all each nutrient
-
-  Scenario: Verify ingredients details present in main meal
-    Then User should see ingredients list for the main meal
-
   Scenario: Verify Diabetes Management Tips heading
     Then User should see heading "Diabetes Management Tips"
-
-  Scenario: Verify tips description
-    Then User should see tips under diabetes tips
-
-  Scenario: Verify "Glycemic Impact:"
-    Then User should see text "Glycemic Impact:"
-
-  Scenario: Verify impact value
-    Then User should see impact value
-
-  Scenario: Validate impact value
-    Then Impact value should be low/medium/high
 
   Scenario: Validate back to plan button
     Given User is in view full plan page

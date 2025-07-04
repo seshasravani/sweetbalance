@@ -1,6 +1,7 @@
 package utilities;
 
 import java.time.Duration;
+import java.util.List;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -47,4 +48,22 @@ public class CommonMethods {
 			LoggerLoad.info("No element found within timeout: " + DEFAULT_TIMEOUT + " seconds");
 		}
 	}
+	public static void waitForElementVisibilityOfAll(List<WebElement> elements) {
+	    try {
+	        WebDriver driver = DriverFactory.getDriver();
+	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DEFAULT_TIMEOUT));
+	        wait.until(ExpectedConditions.visibilityOfAllElements(elements));
+	    } catch (Exception e) {
+	        LoggerLoad.info("No elements found within timeout: " + DEFAULT_TIMEOUT + " seconds");
+	    }
+	}
+	public static boolean isElementVisible(WebElement element) {
+	    try {
+	        waitForElementVisibilityOf(element);
+	        return element.isDisplayed();
+	    } catch (Exception e) {
+	        return false;
+	    }
+	}
+
 }

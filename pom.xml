@@ -12,6 +12,7 @@
 	        <version>3.14.0</version>
 	    </plugin>
       <plugin>
+      
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.5.3</version>    
@@ -19,7 +20,10 @@
           <suiteXmlFiles>
             <suiteXmlFile>testng.xml</suiteXmlFile>
           </suiteXmlFiles>
+          <parallel>tests</parallel>
+          <threadCount>3</threadCount>
         </configuration>  
+        
 	 </plugin>
    
      <plugin>

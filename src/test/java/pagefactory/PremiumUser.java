@@ -8,16 +8,23 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import utilities.CommonMethods;
 import utilities.ConfigReader;
 import utilities.ExcelReader;
 import utilities.LoggerLoad;
-
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 public class PremiumUser {
 	private WebDriver driver;
@@ -68,16 +75,16 @@ public class PremiumUser {
 
 	@FindBy(xpath = "//button[text()='Education']")
 	private WebElement educationBtn;
-	
+
 	@FindBy(xpath = "//button[text()='Snacks']")
 	private WebElement SnacksBtn;
 
 	@FindBy(xpath = "//button[text()='Breakfast']")
 	private WebElement breakfastBtn;
-	
+
 	@FindBy(xpath = "//h3[text()='Nutrition Insights']")
 	private WebElement nutritionInsightscard;
-	//h3[normalize-space()='Nutrition Insights']
+	// h3[normalize-space()='Nutrition Insights']
 
 	// Other UI elements
 	@FindBy(xpath = "//button[contains(@class, 'animate-pulse')]")
@@ -148,22 +155,22 @@ public class PremiumUser {
 
 	@FindBy(xpath = "//h3[contains(text(),'Pre-Meal')]")
 	private List<WebElement> preMealTitles;
-	
+
 	@FindBy(xpath = "/html/body/div/div[1]/main/div[2]/div/div/div[2]/div/div[3]/div[2]/div/div[4]/div/div[2]/div[1]/div[2]/p")
 	private WebElement totalText;
-	
+
 	@FindBy(xpath = "//h3[text()='Main Meal']")
 	private WebElement mainMealSubtitle;
-	
+
 	@FindBy(xpath = "//span[@class='mr-2']")
 	private WebElement utensilIcon;
-	
+
 	@FindBy(xpath = "//span[contains(text(), '7:00 AM')]")
 	private WebElement mainMealTime;
-	
+
 	@FindBy(xpath = "//span[contains(text(), 'AM')]")
 	private WebElement breakfastTimeIndicator;
-	
+
 	@FindBy(xpath = "//button[contains(text(), 'Lunch')]")
 	private WebElement lunchTab;
 	@FindBy(xpath = "//span[contains(normalize-space(),'PM')][1]")
@@ -189,7 +196,7 @@ public class PremiumUser {
 
 	@FindBy(xpath = "//div[contains(@class,'space-x-2')]/button[contains(text(),'Not Completed')]")
 	public WebElement notCompletedButton;
-	
+
 	@FindBy(xpath = "//p[contains(@class, 'text-sm') and contains(@class, 'text-gray-500')]")
 	private WebElement totalCaloriesElement;
 
@@ -198,210 +205,608 @@ public class PremiumUser {
 
 	@FindBy(xpath = "//div[contains(text(),'Main meal')]")
 	private WebElement mainMealCaloriesElement;
-	//button[text()='View Full Meal Plan']
+	// button[text()='View Full Meal Plan']
 	@FindBy(xpath = "//button[text()='View Full Meal Plan']")
 	private WebElement viewFullMealPlanBtn;
 	@FindBy(xpath = "//h1[normalize-space()='Full Meal Plan']")
-    private WebElement fullMealPlanpageTitle;
+	private WebElement fullMealPlanpageTitle;
 	@FindBy(xpath = "//button[normalize-space()='Back to Plan']")
 	private WebElement backToPlanButton;
 	@FindBy(xpath = "//div[contains(@class,'overflow-x-auto')]/button")
 	private List<WebElement> mealSectionButtons;
+	@FindBy(xpath = "//h1[text()='Track Glucose']")
+	private WebElement trackGlucoseTitle;
+	@FindBy(xpath = "//h1[text()='Physical Activity']")
+	private WebElement physicalActivityTitle1;
+	@FindBy(xpath = "//h1[text()='Food Intake Tracker']")
+	private WebElement foodIntakeTrackerTitle;
+	@FindBy(xpath = "//h1[text()='Diabetes Medication Tracker']")
+	private WebElement medicationTrackerTitle;
+	@FindBy(xpath = "//span[text()='👑 Premium Activated ']")
+	private WebElement dashboardHeading;
+	@FindBy(xpath = "//span[text()='😊']")
+	private WebElement emojiLog;
+	@FindBy(xpath = "//button[text()='Log Emotional State']")
+	private WebElement logEmotionalStateBtn;
+	@FindBy(xpath = "//h2[contains(text(),'Pre-meal:')]")
+	private WebElement preMealItemHeader;
+	@FindBy(xpath = "//button[text()='lunch']")
+	private WebElement lunchtabFMP;
+	@FindBy(xpath = "//h3[text()='Preparation']")
+	private WebElement descriptionFMP;
+	@FindBy(xpath = "//strong[contains(text(),'Nutrients (Pre-meal portion)')]")
+	private WebElement preMealNutrientsHeading;
+	@FindBy(xpath = "//strong[text()='Nutrients (Pre-meal portion):']/following-sibling::ul/li")
+	private List<WebElement> nutrientList;
+	// GlucosepopUp
+	@FindBy(xpath = "//h1[text()='Track Glucose']")
+	private WebElement trackGlucoseTitlePopup;
+	@FindBy(xpath = "//p[text()='Keep your health in check']")
+	private WebElement SubTitleGlucosePopup;
+	@FindBy(xpath = "//p[text()='Calories:'and'10']")
+	private WebElement caloriesValue;
+	@FindBy(xpath = "//h3[contains(text(), 'Preparation')]/following::p[1]")
+	private WebElement preparationText;
+	@FindBy(xpath = "//label[contains(text(), 'Blood Glucose Level') or contains(text(), 'Glucose')]")
+	private WebElement glucoseLabel;
+	@FindBy(xpath = "//label[contains(text(), 'Reading Type')]")
+	private WebElement readingTypeLabel;
+	@FindBy(xpath = "//div[contains(@class, 'flex-wrap')]//button")
+	private List<WebElement> readingTypeButtons;
+	@FindBy(xpath = "//label[contains(text(), 'Date')]")
+	private WebElement dateLabel;
+	@FindBy(xpath = "//input[@type='number' and @placeholder='Enter blood glucose level']")
+	private WebElement dateInput;
+	@FindBy(xpath = "//div[contains(text(), 'Low')]")
+	public WebElement lowTransition;
+	@FindBy(xpath = "//div[contains(text(), 'Normal')]")
+	public WebElement normalTransition;
+	@FindBy(xpath = "//div[contains(text(), 'High')]")
+	public WebElement highTransition;
+	@FindBy(xpath = "//button[contains(text(), 'Record Reading')]")
+	private WebElement recordReadingButton;
+	@FindBy(xpath = "//button[contains(text(),'July 2nd, 2025')]")
+	private WebElement datePicker;
+	@FindBy(xpath = "//*[@id=\"radix-:re:\"]/form/div[3]/button")
+	private WebElement datePicker1;
+	@FindBy(xpath = "//div[contains(text(),'Last reading:')]")
+	private WebElement lastreadigofglucose;
+	@FindBy(xpath = "//div[@role='dialog']")
+	private WebElement challengePopup;
+	@FindBy(xpath = "//h2[contains(text(), 'Choose Your Challenge')]")
+	private WebElement popupTitle;
+	@FindBy(xpath = "//p[contains(text(), 'Select a program')]")
+	private WebElement popupSubtext;
+	@FindBy(xpath = "//button//span[text()='10-Day Challenge']/..")
+	public WebElement firstChallengeBtn;
+	@FindBy(xpath = "//button//span[text()='4-Week Program']/..")
+	public WebElement secondChallengeBtn;
 
-	
-   
-	// Helper wait and click method
-	
-	/** Waits for all meal section buttons to be visible */
+	public String getSubtitleTrackGlucosePopupTitle() {
+		CommonMethods.waitForElementVisibilityOf(SubTitleGlucosePopup);
+		return SubTitleGlucosePopup.getText();
+	}
+
+	public List<String> getNutrientLabels() {
+
+		return nutrientList.stream().map(WebElement::getText).collect(Collectors.toList());
+
+	}
+
+	public boolean isPopupVisible() {
+		return challengePopup.isDisplayed();
+	}
+
+	public String getPopupTitle() {
+		return popupTitle.getText().trim();
+	}
+
+	public String getPopupSubtext() {
+		return popupSubtext.getText().trim();
+	}
+
+	public String getFirstChallengeText() {
+		return firstChallengeBtn.getText().replace("\n", " ").trim();
+	}
+
+	public String getSecondChallengeText() {
+		return secondChallengeBtn.getText().replace("\n", " ").trim();
+	}
+
+	public boolean islastreadigofglucoseVisible() {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		try {
+			wait.until(ExpectedConditions.visibilityOf(lastreadigofglucose));
+			return recordReadingButton.isDisplayed();
+		} catch (TimeoutException e) {
+			return false;
+		}
+	}
+
+	public boolean isDatePickerVisible() {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		try {
+			wait.until(ExpectedConditions.visibilityOf(datePicker));
+			return datePicker.isDisplayed();
+		} catch (TimeoutException e) {
+			return false;
+		}
+	}
+
+	public boolean isRecordReadingButtonVisible() {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		try {
+			wait.until(ExpectedConditions.visibilityOf(recordReadingButton));
+			return recordReadingButton.isDisplayed();
+		} catch (TimeoutException e) {
+			return false;
+		}
+	}
+
+	public boolean areAllTransitionLabelsPresent() {
+		try {
+			return lowTransition.isDisplayed() && normalTransition.isDisplayed() && highTransition.isDisplayed();
+		} catch (NoSuchElementException e) {
+			return false;
+		}
+	}
+
+	public String getLowTransitionColor() {
+		return lowTransition.getCssValue("background-color");
+	}
+
+	public String getNormalTransitionColor() {
+		return normalTransition.getCssValue("background-color");
+	}
+
+	public String getHighTransitionColor() {
+		return highTransition.getCssValue("background-color");
+	}
+
+	public String getGlucoseFieldPlaceholder() {
+		return dateInput.getAttribute("placeholder");
+	}
+
+	public boolean isGlucoseFieldDisplayed() {
+		return wait.until(ExpectedConditions.visibilityOf(glucoseLabel)).isDisplayed();
+	}
+
+	public boolean isReadingTypeLabelDisplayed() {
+		return wait.until(ExpectedConditions.visibilityOf(readingTypeLabel)).isDisplayed();
+	}
+
+	public boolean areAllReadingTypesDisplayed() {
+		List<String> expectedTypes = Arrays.asList("Fasting", "Pre-meal", "Post-meal", "Bedtime");
+
+		List<String> actualTypes = readingTypeButtons.stream().map(WebElement::getText).map(String::trim)
+				.collect(Collectors.toList());
+
+		return expectedTypes.stream().allMatch(actualTypes::contains);
+	}
+
+	public boolean isDateLabelDisplayed() {
+		return wait.until(ExpectedConditions.visibilityOf(dateLabel)).isDisplayed();
+	}
+
+	public boolean isDateInputDisplayed() {
+		return wait.until(ExpectedConditions.visibilityOf(dateInput)).isDisplayed();
+	}
+
+	public boolean ismgdlDisplayed() {
+		return wait.until(ExpectedConditions.visibilityOf(dateInput)).isDisplayed();
+	}
+
+	// PhysicalActityPopup
+
+	@FindBy(xpath = "//h1[text()='Physical Activity']")
+	private WebElement physicalActivityTitle;
+	@FindBy(xpath = "//p[contains(text(),'Track your fitness journey')]")
+	private WebElement physicalActivitySubtext;
+	@FindBy(xpath = "//select[@id='activityType']")
+	private WebElement activityTypeDropdown;
+	@FindBy(xpath = "//select[@id='activityType']/option")
+	private List<WebElement> activityTypeOptions;
+	@FindBy(id = "duration")
+	private WebElement durationInput;
+	@FindBy(name = "durationUnit")
+	private WebElement durationUnitDropdown;
+	@FindBy(xpath = "//select[@name='durationUnit']/option")
+	private List<WebElement> durationUnitOptions;
+	@FindBy(xpath = "//button[contains(@aria-haspopup,'dialog') and .//*[name()='svg' and contains(@class,'calendar')]]")
+	private WebElement datePickerButton;
+	@FindBy(xpath = "//label[text()='Intensity']")
+	private WebElement intensityLabel;
+	@FindBy(xpath = "//div[contains(@class,'grid-cols-3')]//button")
+	private List<WebElement> intensityOptions;
+	@FindBy(xpath = "//button[.//span[text()='Save Activity']]")
+	private WebElement saveActivityButton;
+	@FindBy(xpath = "//button[@type='button' and .//*[name()='svg' and @class='lucide lucide-x h-4 w-4']]")
+	private WebElement closeButton;
+	// Inside your POM class
+
+	public boolean isPhysicalActivityTitleDisplayed() {
+		try {
+			CommonMethods.waitForElementVisibilityOf(physicalActivityTitle);
+			return physicalActivityTitle.isDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public String getPhysicalActivityTitleText() {
+		CommonMethods.waitForElementVisibilityOf(physicalActivityTitle);
+		return physicalActivityTitle.getText();
+	}
+
+	public String getSubtitlePhysicalActivityTitle() {
+		CommonMethods.waitForElementVisibilityOf(physicalActivitySubtext);
+		return physicalActivitySubtext.getText();
+	}
+
+	// === Action & Helper Methods ===
+
+	public String fetchTitleText() {
+		CommonMethods.waitForElementVisibilityOf(physicalActivityTitle);
+		return physicalActivityTitle.getText();
+	}
+
+	public String fetchSubtext() {
+		return physicalActivitySubtext.getText();
+	}
+
+	public boolean isActivityTypeDropdownVisible() {
+		try {
+			CommonMethods.waitForElementVisibilityOf(activityTypeDropdown);
+			return activityTypeDropdown.isDisplayed();
+		} catch (Exception e) {
+			return false; // fallback if not visible in time
+		}
+	}
+
+	public List<String> getActivityTypeDropdownOptions() {
+		CommonMethods.waitForElementVisibilityOfAll(activityTypeOptions);
+		return activityTypeOptions.stream().map(WebElement::getText).collect(Collectors.toList());
+	}
+
+	public boolean isDurationInputVisible() {
+		try {
+			CommonMethods.waitForElementVisibilityOf(durationInput);
+			return durationInput.isDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public String getDurationPlaceholder() {
+		return durationInput.getAttribute("placeholder");
+	}
+
+	public boolean isDurationUnitDropdownVisible() {
+		try {
+			CommonMethods.waitForElementVisibilityOf(durationUnitDropdown);
+			return durationUnitDropdown.isDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public List<String> getDurationUnitOptionsText() {
+		CommonMethods.waitForElementVisibilityOfAll(durationUnitOptions);
+		return durationUnitOptions.stream().map(WebElement::getText).collect(Collectors.toList());
+	}
+
+	public boolean isDatePickerVisible1() {
+		try {
+			CommonMethods.waitForElementVisibilityOf(datePickerButton);
+			return datePickerButton.isDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public boolean isIntensityLabelVisible() {
+		try {
+			CommonMethods.waitForElementVisibilityOf(intensityLabel);
+			return intensityLabel.isDisplayed();
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public String getPreparationInstructions() {
+		return preparationText.getText().trim();
+	}
+
+	public boolean isCaloriesValueDisplayed() {
+		return isElementVisible(caloriesValue);
+	}
+
+	public boolean isPreMealDescriptionDisplayed() {
+		return isElementVisible(descriptionFMP);
+	}
+
+	public String getPreMealDescriptionText() {
+		return descriptionFMP.getText();
+	}
+
+	public String getPreMealItemText() {
+		return preMealItemHeader.getText();
+	}
+
+	public void clickemojiLogBtn() {
+		waitAndClick(emojiLog, "emoji");
+	}
+
+	public void clicklogEmotionalStateBtn() {
+		waitAndClick(logEmotionalStateBtn, "Emotional State");
+	}
+
+	public boolean isemojiDisplayed() {
+		return isElementVisible(emojiLog);
+	}
+
+	public boolean isOnDashboard() {
+		return isElementVisible(dashboardHeading);
+	}
+
+	public void clickLogBtn() {
+		waitAndClick(logButton, "Log");
+	}
+
+	public void clickMedicationBtn() {
+		waitAndClick(medicationBtn, "Medication");
+	}
+
+	public void clickFoodIntakeBtn() {
+		waitAndClick(foodIntakeBtn, "Food Intake");
+	}
+
+	public void clickPhysicalActivityBtn() {
+		waitAndClick(physicalActivityBtn, "Physical Activity");
+	}
+
+	public boolean isMedicationTrackerTitleVisible() {
+		return isElementVisible(medicationTrackerTitle);
+	}
+
+	public boolean isFoodIntakeTrackerTitleVisible() {
+		return isElementVisible(foodIntakeTrackerTitle);
+	}
+
+	public boolean isphysicalActivityTitleVisible() {
+		return isElementVisible(physicalActivityTitle);
+	}
+
+	public boolean isTrackGlucoseTitleVisible() {
+		return isElementVisible(trackGlucoseTitle);
+	}
+
+	private boolean isElementVisible(WebElement trackGlucoseTitle2) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	public List<String> getVisibleMealSectionButtonLabels() {
-	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-	    wait.until(ExpectedConditions.visibilityOfAllElements(mealSectionButtons));
+		CommonMethods.waitForElementVisibilityOfAll(mealSectionButtons); // you may need to add this method in
+																			// CommonMethods
 
-	    List<String> labels = new ArrayList<>();
-	    for (WebElement button : mealSectionButtons) {
-	        if (button.isDisplayed()) {
-	            labels.add(button.getText().trim());
-	        }
-	    }
-	    return labels;
+		List<String> labels = new ArrayList<>();
+		for (WebElement button : mealSectionButtons) {
+			if (button.isDisplayed()) {
+				labels.add(button.getText().trim());
+			}
+		}
+		return labels;
 	}
+
 	public String getBackToPlanButtonText() {
-	    return backToPlanButton.getText().trim();
+		return backToPlanButton.getText().trim();
 	}
+
 	public boolean isBackToPlanButtonVisible() {
-	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-	    try {
-	        wait.until(ExpectedConditions.visibilityOf(backToPlanButton));
-	        return backToPlanButton.isDisplayed();
-	    } catch (TimeoutException e) {
-	        return false;
-	    }
+		return isElementVisible(backToPlanButton);
 	}
+
 	public void clickBackToPlan() {
-	    backToPlanButton.click();
+		waitAndClick(backToPlanButton, "Back to Plan");
 	}
-    public String getPageTitleText() {
-        wait.until(ExpectedConditions.visibilityOf(fullMealPlanpageTitle));
-        return fullMealPlanpageTitle.getText().trim();
-    }
-    public boolean isOnFullMealPlanPage() {
-        return getPageTitleText().equals("Full Meal Plan");
-    }
+
+	public void clickweeklyPlanBtn() {
+		waitAndClick(weeklyPlanBtn, "Weekly Plan");
+	}
+
+	public String getPageTitleText() {
+		wait.until(ExpectedConditions.visibilityOf(fullMealPlanpageTitle));
+		return fullMealPlanpageTitle.getText().trim();
+	}
+
+	public boolean isOnFullMealPlanPage() {
+		return getPageTitleText().equals("Full Meal Plan");
+	}
+
 	public String validatePageTitle() {
 		return driver.getTitle();
 	}
+
 	public String getviewMeakPlanPageTitle() {
 		return driver.getTitle();
 	}
-	public void clickViewFullMealPlanBtn() {
-		viewFullMealPlanBtn.click();
-	}
-	public boolean isPreMealDetailVisible() {
-        WebElement el = wait.until(ExpectedConditions.visibilityOf(preMealCaloriesElement));
-        return el.isDisplayed() && !el.getText().trim().isEmpty();
-    }
 
-    /** Returns true once the Main meal detail is visible and non‑empty. */
-    public boolean isMainMealDetailVisible() {
-        WebElement el = wait.until(ExpectedConditions.visibilityOf(mainMealCaloriesElement));
-        return el.isDisplayed() && !el.getText().trim().isEmpty();
-    }
+	public void clickViewFullMealPlanBtn() {
+		waitAndClick(viewFullMealPlanBtn, "View FullMeal Plan");
+	}
+
+	public boolean isPreMealDetailVisible() {
+		WebElement el = wait.until(ExpectedConditions.visibilityOf(preMealCaloriesElement));
+		return el.isDisplayed() && !el.getText().trim().isEmpty();
+	}
+
+	/** Returns true once the Main meal detail is visible and non‑empty. */
+	public boolean isMainMealDetailVisible() {
+		WebElement el = wait.until(ExpectedConditions.visibilityOf(mainMealCaloriesElement));
+		return el.isDisplayed() && !el.getText().trim().isEmpty();
+	}
+
+	public boolean isPreMealNutrientsHeadingVisible() {
+		try {
+			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+			return wait.until(ExpectedConditions.visibilityOf(preMealNutrientsHeading)).isDisplayed();
+		} catch (TimeoutException e) {
+			return false;
+		}
+	}
 
 	public int getTotalCalories() {
-	    String text = totalCaloriesElement.getText(); // 
-	    return extractNumber(text);
+		String text = totalCaloriesElement.getText(); //
+		return extractNumber(text);
 	}
 
 	public int getPreMealCalories() {
-	    String text = preMealCaloriesElement.getText(); // 
-	    return extractNumber(text);
+		String text = preMealCaloriesElement.getText(); //
+		return extractNumber(text);
 	}
 
 	public int getMainMealCalories() {
-	    String text = mainMealCaloriesElement.getText(); 
-	    return extractNumber(text);
+		String text = mainMealCaloriesElement.getText();
+		return extractNumber(text);
 	}
 
 	private int extractNumber(String text) {
-	    return Integer.parseInt(text.replaceAll("\\D+", ""));
+		return Integer.parseInt(text.replaceAll("\\D+", ""));
 	}
+
 	public void clickCompletedButton() {
-	    completedButton.click();
+		completedButton.click();
 	}
 
 	public WebElement waitForCompletedButtonToBeGreen() {
-	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-	    // Wait until the completedButton's class attribute contains "bg-green-500"
-	    wait.until(ExpectedConditions.attributeContains(completedButton, "class", "bg-green-500"));
-	    return completedButton;  // return the button after condition is met
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		wait.until(ExpectedConditions.attributeContains(completedButton, "class", "bg-green-500"));
+		return completedButton; // return the button after condition is met
 	}
 
-    public void clickPartiallyCompletedButton() {
-        partiallyCompletedButton.click();
-    }
-    public WebElement waitForPartiallyCompletedButtonYellow() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.attributeContains(partiallyCompletedButton, "class", "bg-yellow-500"));  // confirm class name!
-        return partiallyCompletedButton;
-    }
- 
-
-    public WebElement waitForNotCompletedButtonRed() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.attributeContains(notCompletedButton, "class", "bg-red-500")); // confirm exact class!
-        return notCompletedButton;
-    }
-
-
-    public void clickNotCompletedButton() {
-        notCompletedButton.click();
-    }
-
-    // Color getters
-    
-    public String getCompletedButtonColor() {
-        return completedButton.getCssValue("background-color");
-    }
-
-    public String getPartiallyCompletedButtonColor() {
-        return partiallyCompletedButton.getCssValue("background-color");
-    }
-
-    public String getNotCompletedButtonColor() {
-        return notCompletedButton.getCssValue("background-color");
-    }
-    public String getStatusButtonText(String buttonText) {
-	    String xpath = "//button[normalize-space(text())='" + buttonText + "']";
-	    WebElement statusButton = new WebDriverWait(driver, Duration.ofSeconds(10))
-	        .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
-	    return statusButton.getText().trim();
+	public void clickPartiallyCompletedButton() {
+		partiallyCompletedButton.click();
 	}
+
+	public WebElement waitForPartiallyCompletedButtonYellow() {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		wait.until(ExpectedConditions.attributeContains(partiallyCompletedButton, "class", "bg-yellow-500")); // confirm
+																												// class
+																												// name!
+		return partiallyCompletedButton;
+	}
+
+	public WebElement waitForNotCompletedButtonRed() {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		wait.until(ExpectedConditions.attributeContains(notCompletedButton, "class", "bg-red-500")); // confirm exact
+																										// class!
+		return notCompletedButton;
+	}
+
+	public void clickNotCompletedButton() {
+		notCompletedButton.click();
+	}
+
+	// Color getters
+
+	public String getCompletedButtonColor() {
+		return completedButton.getCssValue("background-color");
+	}
+
+	public String getPartiallyCompletedButtonColor() {
+		return partiallyCompletedButton.getCssValue("background-color");
+	}
+
+	public String getNotCompletedButtonColor() {
+		return notCompletedButton.getCssValue("background-color");
+	}
+
+	public String getStatusButtonText(String buttonText) {
+		String xpath = "//button[normalize-space(text())='" + buttonText + "']";
+		WebElement statusButton = new WebDriverWait(driver, Duration.ofSeconds(10))
+				.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+		return statusButton.getText().trim();
+	}
+
 	public String getLabelAfterMainMealCalories() {
-	    return calorieLabelElement.getText().trim();  // Should return "calories"
+		return calorieLabelElement.getText().trim();
 	}
+
 	public int getMainMealCalorieValue() {
-	    String text = mainMealCalorieElement.getText().trim();  // e.g., "340"
-	    return Integer.parseInt(text);  // convert to number
+		String text = mainMealCalorieElement.getText().trim();
+		return Integer.parseInt(text);
 	}
 
-	
+	public String getTrackGlucosePopupTitle() {
+		try {
+			new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOf(trackGlucoseTitle));
+			return trackGlucoseTitle.getText();
+		} catch (TimeoutException e) {
+			return "";
+		}
+	}
+
 	public String getBreakfastTimeOnly() {
-	    String fullTime = breakfastTimeElement.getText().trim(); // e.g., "7:30 AM"
-	    if (fullTime.contains(" ")) {
-	        return fullTime.split(" ")[0]; // returns "7:30"
-	    }
-	    return fullTime;
+		String fullTime = breakfastTimeElement.getText().trim();
+		if (fullTime.contains(" ")) {
+			return fullTime.split(" ")[0];
+		}
+		return fullTime;
 	}
+
 	public String maindinnerTimeElement() {
-	    String fullTime = breakfastTimeElement.getText().trim(); // e.g., "7:30 AM"
-	    if (fullTime.contains(" ")) {
-	        return fullTime.split(" ")[0]; // returns "7:30"
-	    }
-	    return fullTime;
+		String fullTime = breakfastTimeElement.getText().trim();
+		if (fullTime.contains(" ")) {
+			return fullTime.split(" ")[0];
+		}
+		return fullTime;
 	}
-	
+
 	public void clickDinnerTab() {
-		waitAndClick(dinnerTab,"Dinner");
+		waitAndClick(dinnerTab, "Dinner");
 	}
+
 	public void clickLunchTab() {
-		waitAndClick(lunchTab,"Lunch");
+		waitAndClick(lunchTab, "Lunch");
 	}
+
+	public void clicklunchTabFMP() {
+		waitAndClick(lunchtabFMP, "Lunch");
+	}
+
 	public String getTimeIndicatore() {
-		String fullTime1 = lunchTimeIndicator.getText().trim(); // e.g., "12.00 PM"
-	    
-	    if (fullTime1.contains(" ")) {
-	        return fullTime1.split(" ")[1]; // returns "PM"
-	    }
+		String fullTime1 = lunchTimeIndicator.getText().trim();
 
-	    return fullTime1; // fallback if there's no space (e.g., just "PM")
+		if (fullTime1.contains(" ")) {
+			return fullTime1.split(" ")[1];
+		}
+
+		return fullTime1;
 	}
-	
-	public String getBreakfastIndicator() {
-	    String fullTime = breakfastTimeIndicator.getText().trim(); // e.g., "7:00 AM"
-	    
-	    if (fullTime.contains(" ")) {
-	        return fullTime.split(" ")[1]; // returns "AM"
-	    }
 
-	    return fullTime; // fallback if there's no space (e.g., just "AM")
+	public String getBreakfastIndicator() {
+		String fullTime = breakfastTimeIndicator.getText().trim();
+		if (fullTime.contains(" ")) {
+			return fullTime.split(" ")[1];
+		}
+		return fullTime;
 	}
 
 	public boolean isMainMealTimeVisible() {
-	    return mainMealTime.isDisplayed();
+		return mainMealTime.isDisplayed();
 	}
-	
 
 	public String getMainMealTimeText() {
-	    return mainMealTime.getText().trim();
+		return mainMealTime.getText().trim();
 	}
 
 	public boolean isBreakfastBtnVisible() {
-	    return breakfastBtn.isDisplayed();
+		return breakfastBtn.isDisplayed();
 	}
 
-	// Example for Nutrition card visibility
 	public boolean isNutritionCardVisible() {
-	    return nutritionInsightscard.isDisplayed();
+		return nutritionInsightscard.isDisplayed();
 	}
 
 	// Action methods
@@ -409,6 +814,7 @@ public class PremiumUser {
 		SnacksBtn.click();
 		LoggerLoad.info("Clicked Snacks button");
 	}
+
 	public void clickLoginBtn() {
 		try {
 			wait.until(ExpectedConditions.elementToBeClickable(loginBtn)).click();
@@ -417,15 +823,16 @@ public class PremiumUser {
 			LoggerLoad.warn("Login button not found or already clicked, skipping...");
 		}
 	}
+
 	public String getTotalText() {
-	    LoggerLoad.info("Total count text: " + totalText.getText().trim());
-	    return totalText.getText().trim();
-	}
-	public boolean isTotalCountZero() {
-	    String text = getTotalText(); // e.g., "0 total"
-	    return text.startsWith("0");
+		LoggerLoad.info("Total count text: " + totalText.getText().trim());
+		return totalText.getText().trim();
 	}
 
+	public boolean isTotalCountZero() {
+		String text = getTotalText(); // e.g., "0 total"
+		return text.startsWith("0");
+	}
 
 	public boolean isChallengeButtonFlashingWithDuration(double expectedSeconds) {
 		WebElement challengeBtn = new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions
@@ -516,21 +923,24 @@ public class PremiumUser {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("window.scrollBy(0, 10000);");
 	}
-    public void isMainMealTitlesVisible(){
-	
-	wait.until(ExpectedConditions.visibilityOf(mainMealSubtitle));
-	LoggerLoad.info("Main Meal title is visible");
-}
-    public boolean isUtensilIconVisible() {
-        return utensilIcon.isDisplayed();
-    }
+
+	public void isMainMealTitlesVisible() {
+
+		wait.until(ExpectedConditions.visibilityOf(mainMealSubtitle));
+		LoggerLoad.info("Main Meal title is visible");
+	}
+
+	public boolean isUtensilIconVisible() {
+		return utensilIcon.isDisplayed();
+	}
+
 	public boolean areRecordNewDataButtonsVisible() {
 		try {
 			wait.until(ExpectedConditions.visibilityOf(bloodGlucoseBtn));
 			wait.until(ExpectedConditions.visibilityOf(physicalActivityBtn));
 			wait.until(ExpectedConditions.visibilityOf(foodIntakeBtn));
 			wait.until(ExpectedConditions.visibilityOf(medicationBtn));
-		return true;
+			return true;
 		} catch (TimeoutException e) {
 			LoggerLoad.error("One or more Record New Data buttons are not visible.");
 			return false;
@@ -546,6 +956,10 @@ public class PremiumUser {
 
 	public String getBloodGlucoseText() {
 		return bloodGlucoseBtn.getText().trim();
+	}
+
+	public void clickBloodGlucoseBtn() {
+		waitAndClick(bloodGlucoseBtn, "Blood Glucose");
 	}
 
 	public boolean isActivitySvgVisible() {
@@ -578,21 +992,22 @@ public class PremiumUser {
 		return medicationBtn.getText().trim();
 	}
 
-
-
 	public void enterPassword(String password) {
 		wait.until(ExpectedConditions.visibilityOf(passwordField));
 		passwordField.clear();
 		passwordField.sendKeys(password);
 		LoggerLoad.info("Entered password");
 	}
+
 	private void waitAndClick(WebElement element, String name) {
 		wait.until(ExpectedConditions.elementToBeClickable(element)).click();
 		LoggerLoad.info("Clicked: " + name);
 	}
+
 	public void clickContinueWithEmailBtn() {
 		waitAndClick(continueWithEmailBtn, "Continue with email");
 	}
+
 	public void clickSignInButton() {
 		waitAndClick(signInButton, "Sign in");
 	}
@@ -600,6 +1015,10 @@ public class PremiumUser {
 	// Navigation buttons clicks
 	public void clickHome() {
 		waitAndClick(homeBtn, "Home");
+	}
+
+	public void clickEmoji() {
+		waitAndClick(emojiIcon, "emoji");
 	}
 
 	public void clickLogbook() {
@@ -651,52 +1070,57 @@ public class PremiumUser {
 		}
 	}
 
-	// Verify the navigation buttons are in expected order
 	public boolean isNavButtonsInOrder() {
-		wait.until(ExpectedConditions.visibilityOf(homeBtn));
-		wait.until(ExpectedConditions.visibilityOf(logbookBtn));
-		wait.until(ExpectedConditions.visibilityOf(dashboardBtn));
-		wait.until(ExpectedConditions.visibilityOf(educationBtn));
-		List<String> actualOrder = List.of(
-			homeBtn.getText().trim(),
-			logbookBtn.getText().trim(),
-			dashboardBtn.getText().trim(),
-			educationBtn.getText().trim()
-		);
+		CommonMethods.waitForElementVisibilityOf(homeBtn);
+		CommonMethods.waitForElementVisibilityOf(logbookBtn);
+		CommonMethods.waitForElementVisibilityOf(dashboardBtn);
+		CommonMethods.waitForElementVisibilityOf(educationBtn);
+
+		List<String> actualOrder = List.of(homeBtn.getText().trim(), logbookBtn.getText().trim(),
+				dashboardBtn.getText().trim(), educationBtn.getText().trim());
 
 		List<String> expectedOrder = List.of("Home", "Logbook", "Dashboard", "Education");
 		LoggerLoad.info("All four elements displayed");
 		return actualOrder.equals(expectedOrder);
 	}
 
+	public void clickChallengeButton() {
+		CommonMethods.waitForElementTobeClick(flashtab);
+	}
+
 	public void waitForChallengeButton() {
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[contains(text(),'Challenge Yourself Today')]")));
+		CommonMethods.waitForElementVisibilityOf(
+				driver.findElement(By.xpath("//button[contains(text(),'Challenge Yourself Today')]")));
 		LoggerLoad.info("Challenge Yourself Today button is now visible.");
+	}
+
+	public List<String> getIntensityOptionsText() {
+		return intensityOptions.stream().map(WebElement::getText).collect(Collectors.toList());
 	}
 
 	public boolean isChallengeButtonAnimated() {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
-		String animationName = (String) js.executeScript("return window.getComputedStyle(arguments[0]).animationName;", getFlashtab());
-
+		String animationName = (String) js.executeScript("return window.getComputedStyle(arguments[0]).animationName;",
+				getFlashtab());
 		LoggerLoad.info("Animation name on Challenge Button: " + animationName);
-		return animationName != null && !animationName.isEmpty() && !animationName.equals("none");
+		return animationName != null && !animationName.isEmpty() && !"none".equals(animationName);
 	}
 
 	public String getChallengeButtonText() {
+		CommonMethods.waitForElementVisibilityOf(flashtab);
 		return flashtab.getText();
 	}
 
 	public boolean isPreMealTitleDisplayed() {
-		LoggerLoad.info("Pre-Meal title displayed");
-		return preMealTitle.isDisplayed();
+		return CommonMethods.isElementVisible(preMealTitle);
 	}
 
 	public boolean isAppNameDisplayed() {
-		return appName.isDisplayed();
+		return CommonMethods.isElementVisible(appName);
 	}
 
 	public boolean isUserNameDisplayed() {
-		return userName.isDisplayed();
+		return CommonMethods.isElementVisible(userName);
 	}
 
 	public boolean isLoggedInAs() {
@@ -706,12 +1130,11 @@ public class PremiumUser {
 
 	public boolean isAlarmClockIconDisplayed() {
 		LoggerLoad.info("Checking visibility of alarm clock icon in the Pre-Meal section");
-		boolean visible = alarmClockIcon.isDisplayed();
+		boolean visible = CommonMethods.isElementVisible(alarmClockIcon);
 		LoggerLoad.info(visible ? "Alarm clock icon is displayed." : "Alarm clock icon is NOT displayed.");
 		return visible;
 	}
 
-	// Validate 'Pre-Meal' is visible in all meal tabs
 	public boolean isPreMealVisibleInAllTabs() {
 		LoggerLoad.info("Validating 'Pre-Meal' is the first title in each meal tab");
 
@@ -721,31 +1144,30 @@ public class PremiumUser {
 			waitAndClick(tab, tabName);
 
 			try {
-				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h3[contains(text(),'Pre-Meal')]")));
+				CommonMethods
+						.waitForElementVisibilityOf(driver.findElement(By.xpath("//h3[contains(text(),'Pre-Meal')]")));
 			} catch (TimeoutException e) {
 				LoggerLoad.warn("'Pre-Meal' not found in tab: " + tabName);
 				return false;
 			}
 
 			List<WebElement> preMealTitles = driver.findElements(By.xpath("//h3[contains(text(),'Pre-Meal')]"));
-
 			boolean found = preMealTitles.stream()
 					.anyMatch(el -> el.getText().replace("⏰", "").trim().equalsIgnoreCase("Pre-Meal"));
 
 			LoggerLoad.info("In " + tabName + " tab, Pre-Meal found: " + found);
 
-			if (!found) {
+			if (!found)
 				return false;
-			}
 		}
 
 		LoggerLoad.info("'Pre-Meal' is present in all meal tabs");
 		return true;
 	}
-	
-	
+
 	public WebElement getFlashtab() {
-		return wait.until(ExpectedConditions.visibilityOf(flashtab));
+		CommonMethods.waitForElementVisibilityOf(flashtab);
+		return flashtab;
 	}
 
 	public WebElement getIconByIndex(int index) {
@@ -757,14 +1179,190 @@ public class PremiumUser {
 	}
 
 	public String getPreMealTitleText() {
-	    return preMealTitle.getText().trim();
+		CommonMethods.waitForElementVisibilityOf(preMealTitle);
+		return preMealTitle.getText().trim();
 	}
+
 	public boolean isMainMealSubtitleVisible() {
-	    return mainMealSubtitle.isDisplayed();
+		return CommonMethods.isElementVisible(mainMealSubtitle);
 	}
+
 	public String getMainMealSubtitleText() {
-	    return mainMealSubtitle.getText().trim();
+		CommonMethods.waitForElementVisibilityOf(mainMealSubtitle);
+		return mainMealSubtitle.getText().trim();
 	}
-	
+
+	// FoodIntake
+	@FindBy(xpath = "//h1[text()='Food Intake Tracker']")
+	private WebElement title;
+
+	@FindBy(xpath = "//p[contains(text(),'Track what you eat to manage your diabetes')]")
+	private WebElement subtext;
+
+	@FindBy(xpath = "//div[contains(@class,'rounded-xl p-1')]/button")
+	private List<WebElement> mealTabs1;
+
+	@FindBy(xpath = "//input[@id='foodName']")
+	private WebElement foodNameInput;
+
+	@FindBy(xpath = "//select[@id='servingSize']")
+	private WebElement servingSizeDropdown;
+
+	@FindBy(xpath = "//select[@id='servingSize']/option")
+	private List<WebElement> servingSizeOptions;
+
+	@FindBy(xpath = "//input[@id='calories']")
+	private WebElement calorieInput;
+
+	@FindBy(xpath = "//button[@title='Calculate calories automatically']//*[name()='svg']")
+	private WebElement calculatorIcon;
+
+	@FindBy(xpath = "//p[contains(text(),'Enter calories or click the calculator icon')]")
+	private WebElement calorieHelperText;
+	@FindBy(xpath = "//textarea[@id='notes']")
+	private WebElement notesInput;
+	@FindBy(xpath = "//button[.//span[text()='Save Food Entry']]")
+	private WebElement saveFoodEntryButton;
+	@FindBy(id = "notes")
+	private WebElement notesTextarea;
+	@FindBy(xpath = "//div[contains(@class,'flex') and contains(@class,'bg-gray-100')]/button")
+	private List<WebElement> mealTabsfoodpopup;
+	@FindBy(css = "button[aria-haspopup='dialog']")
+	private WebElement calendarButton;
+
+	public String getDisplayedCalendarDate() {
+		CommonMethods.waitForElementVisibilityOf(calendarButton);
+		return calendarButton.getText().trim(); // e.g., "July 4th, 2025"
+	}
+
+	public String getFormattedTodaysDate() {
+		LocalDate today = LocalDate.now(); // Uses system's default timezone
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d['st']['nd']['rd']['th'], yyyy",
+				Locale.ENGLISH);
+
+		// Manually format day with ordinal suffix
+		int day = today.getDayOfMonth();
+		String suffix;
+		if (day >= 11 && day <= 13) {
+			suffix = "th";
+		} else {
+			switch (day % 10) {
+			case 1:
+				suffix = "st";
+				break;
+			case 2:
+				suffix = "nd";
+				break;
+			case 3:
+				suffix = "rd";
+				break;
+			default:
+				suffix = "th";
+			}
+		}
+
+		String formatted = today.format(DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH));
+		return formatted.replaceFirst(String.valueOf(day), day + suffix); // e.g., "July 4th, 2025"
+	}
+
+	public List<String> getMealTabsText() {
+		CommonMethods.waitForElementVisibilityOfAll(mealTabs);
+		return mealTabs.stream().map(tab -> tab.getText().trim()).collect(Collectors.toList());
+	}
+
+	// Type text into the notes textarea
+	public void enterAdditionalInfo(String text) {
+		notesTextarea.clear();
+		notesTextarea.sendKeys(text);
+	}
+
+	// === Action Methods ===
+
+	public boolean isTitleVisible() {
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		try {
+			wait.until(ExpectedConditions.visibilityOf(title));
+			return title.isDisplayed();
+		} catch (TimeoutException e) {
+			return false;
+		}
+
+	}
+
+	public String getTitleText() {
+		return title.getText();
+	}
+
+	public String getSubtext() {
+		return subtext.getText();
+	}
+
+	public List<String> getMealTabNames() {
+		return mealTabs.stream().map(WebElement::getText).collect(Collectors.toList());
+	}
+
+	@SuppressWarnings("deprecation")
+	public String getSelectedMealTab() {
+		for (WebElement tab : mealTabs1) {
+			if (tab.getAttribute("class").contains("bg-gradient-to-r")) {
+				return tab.getText();
+			}
+		}
+		return null;
+	}
+
+	public boolean isFoodNameFieldVisible() {
+		return foodNameInput.isDisplayed();
+	}
+
+	@SuppressWarnings("deprecation")
+	public String getFoodNamePlaceholder() {
+		return foodNameInput.getAttribute("placeholder");
+	}
+
+	public boolean isServingSizeDropdownVisible() {
+		return servingSizeDropdown.isDisplayed();
+	}
+
+	public String getSelectedServingSize() {
+		Select select = new Select(servingSizeDropdown);
+		return select.getFirstSelectedOption().getText();
+	}
+
+	public List<String> getServingSizeOptions() {
+		return servingSizeOptions.stream().map(WebElement::getText).collect(Collectors.toList());
+	}
+
+	public boolean isCaloriesInputVisible() {
+		return calorieInput.isDisplayed();
+	}
+
+	public String getCaloriesPlaceholder() {
+		return calorieInput.getAttribute("placeholder");
+	}
+
+	public boolean isCalculatorIconVisible() {
+		return calculatorIcon.isDisplayed();
+	}
+
+	public String getCaloriesHelperText() {
+		return calorieHelperText.getText();
+	}
+
+	public boolean isDatePickerVisible2() {
+		return datePicker.isDisplayed();
+	}
+
+	public boolean isNotesInputVisible() {
+		return notesInput.isDisplayed();
+	}
+
+	public String getNotesPlaceholder() {
+		return notesInput.getAttribute("placeholder");
+	}
+
+	public boolean isSaveButtonVisible() {
+		return saveFoodEntryButton.isDisplayed();
+	}
 
 }
