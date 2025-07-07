@@ -56,13 +56,13 @@ public class Hooks {
 		}
 	}
 	
-	@After(order =0) 	// execute last
-	public static void quitBrowser() { 	//Quits the browser and removes the thread-local WebDriver instance
-		 if (DriverFactory.getDriver() != null) {
-		        DriverFactory.getDriver().quit(); 	// Close the browser
-		        DriverFactory.tlDriver.remove(); 	// Clean up ThreadLocal driver
-				LoggerLoad.info("Browser closed and WebDriver instance removed.");
-		    }
-    }
+//	@After(order =0) 	// execute last
+//	public static void quitBrowser() { 	//Quits the browser and removes the thread-local WebDriver instance
+//		 if (DriverFactory.getDriver() != null) {
+//		        DriverFactory.getDriver().quit(); 	// Close the browser
+//		        DriverFactory.tlDriver.remove(); 	// Clean up ThreadLocal driver
+//				LoggerLoad.info("Browser closed and WebDriver instance removed.");
+	//	    }
+  //  }
 	
 }

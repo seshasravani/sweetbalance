@@ -18,7 +18,7 @@ public class Sweet_loginSD {
 
     @Given("User is on SweetBalance homepage")
     public void user_is_on_sweet_balance_homepage() {
-        // Since Hooks already navigate to URL, you might leave this empty or add validations
+        
     }
 
     @When("User clicks on Login link")

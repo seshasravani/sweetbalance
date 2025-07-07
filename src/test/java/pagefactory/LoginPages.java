@@ -88,6 +88,8 @@ public class LoginPages {
     @FindBy(xpath = "//input[@placeholder='Enter your password']")
     private WebElement passwordInput;
     
+   
+    
     @FindBy(xpath = "/html/body/div/div[1]/div/div[2]/form/div[2]/input")
     private WebElement fullNameInput;
     
@@ -97,11 +99,19 @@ public class LoginPages {
     @FindBy(xpath = "//input[@name='password']")
     private WebElement inputPassword;
     
+    
+    
     @FindBy(id = "terms")
     private WebElement termsCheckbox;
     
     @FindBy(xpath = "//*[@id='root']/div[1]/div/div[2]/form/button")
     private WebElement createAccountButton;
+
+    @FindBy(xpath = "//button[contains(text(),'Upload Blood Report')]")
+    private WebElement uploadBloodReportButton;
+
+    @FindBy(xpath = "//button[contains(text(),'Step Through Onboarding')]")
+    private WebElement stepThroughOnboardingButton;
 
     
 
@@ -278,8 +288,52 @@ public class LoginPages {
         public boolean isCreateAccountButtonEnabled() {
             return createAccountButton.isEnabled();
         }
+        
 
+        public void cpEnterFullName(String name) {
+            fullNameInput.clear();
+            fullNameInput.sendKeys(name);
         }
+
+        public void cpEnterUsername(String username) {
+            usernameInput.clear();
+            usernameInput.sendKeys(username);
+        }
+
+        public void cpEnterPassword(String password) {
+            inputPassword.clear();
+            inputPassword.sendKeys(password);
+        }
+
+        public void cpCheckTermsAndConditions() {
+            if (!termsCheckbox.isSelected()) {
+                termsCheckbox.click();
+            }
+        }
+
+        public boolean cpIsCreateAccountButtonEnabled() {
+            return createAccountButton.isEnabled();
+        }
+
+        public void cpClickCreateAccount() {
+            createAccountButton.click();
+        }
+
+        public boolean cpIsUploadButtonVisible() {
+            return waitForElementVisible(uploadBloodReportButton, 10).isDisplayed();
+        }
+
+        public boolean cpIsStepThroughButtonVisible() {
+            return waitForElementVisible(stepThroughOnboardingButton, 10).isDisplayed();
+        }
+
+        private WebElement waitForElementVisible(WebElement element, int seconds) {
+            return new WebDriverWait(driver, Duration.ofSeconds(seconds))
+                    .until(ExpectedConditions.visibilityOf(element));
+        }
+    }
+
+        
 
 
 
